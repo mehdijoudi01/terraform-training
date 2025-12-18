@@ -24,6 +24,7 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_OWNER_ID: ${{ secrets.RENDER_OWNER_ID }}
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
         run: terraform init
 
       - name: Terraform Format Check
@@ -34,12 +35,14 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_OWNER_ID: ${{ secrets.RENDER_OWNER_ID }}
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
         run: terraform destroy -auto-approve
 
       - name: Terraform Plan
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_OWNER_ID: ${{ secrets.RENDER_OWNER_ID }}
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
         run: terraform plan -no-color
 
       - name: Terraform Apply 
@@ -47,4 +50,5 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_OWNER_ID: ${{ secrets.RENDER_OWNER_ID }}
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
         run: terraform apply -auto-approve

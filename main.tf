@@ -6,6 +6,14 @@ terraform {
       version = "~> 1.0"
     }
   }
+
+  cloud {
+    organization = "terraform-training-mehdi"
+
+    workspaces {
+      name = "terraform-training"
+    }
+  }
 }
 
 provider "render" {
