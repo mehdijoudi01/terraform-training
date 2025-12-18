@@ -93,6 +93,92 @@
       h1 { font-size: 20px; }
       .game-title { font-size: 16px; }
     }
+    .blast-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 15px; align-items: flex-start; }
+    .blast-board {
+      display: grid;
+      grid-template-columns: repeat(5, 50px);
+      gap: 2px;
+      background: #667eea;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .blast-cell {
+      width: 50px;
+      height: 50px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+    .blast-cell:hover { background: #e8e8e8; }
+    .blast-cell.filled-1 { background: #FF6B6B; color: white; }
+    .blast-cell.filled-2 { background: #4ECDC4; color: white; }
+    .blast-cell.filled-3 { background: #FFE66D; color: #333; }
+    .blast-cell.filled-4 { background: #95E1D3; color: white; }
+    .blast-cell.filled-5 { background: #C7CEEA; color: white; }
+    .blast-cell.matched { animation: pop 0.3s; }
+    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(0); } }
+    .blast-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .blast-stats {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      min-width: 150px;
+    }
+    .blast-stats div { margin: 8px 0; font-weight: bold; }
+    .blast-preview {
+      display: grid;
+      grid-template-columns: repeat(2, 40px);
+      gap: 2px;
+      background: #f5f5f5;
+      padding: 8px;
+      border-radius: 5px;
+      min-height: 84px;
+    }
+    .blast-preview-cell {
+      width: 40px;
+      height: 40px;
+      background: #e8e8e8;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      cursor: grab;
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .blast-preview-cell.filled-1 { background: #FF6B6B; color: white; }
+    .blast-preview-cell.filled-2 { background: #4ECDC4; color: white; }
+    .blast-preview-cell.filled-3 { background: #FFE66D; color: #333; }
+    .blast-preview-cell.filled-4 { background: #95E1D3; color: white; }
+    .blast-preview-cell.filled-5 { background: #C7CEEA; color: white; }
+    @media (max-width: 600px) {
+      .blast-container { flex-direction: column; }
+      .blast-board { grid-template-columns: repeat(5, 40px); }
+      .blast-cell { width: 40px; height: 40px; font-size: 14px; }
+      .blast-preview-cell { width: 30px; height: 30px; font-size: 12px; }
+    }
+    .blast-stats div { color: #333; }
+    .blast-combo { color: #FF6B6B; font-size: 12px; margin-top: 5px; }
+    .blast-power-up { 
+      background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+      animation: pulse 0.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.8); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 1); } }
+    .blast-cell.obstacle { background: #333 !important; color: white !important; }
+    .blast-diff-selector { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
+    .diff-btn { padding: 5px 10px; background: #e0e0e0; border: 2px solid #999; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; }
+    .diff-btn.active { background: #667eea; color: white; border-color: #667eea; }
+
 
   </style>
 </head>
@@ -134,6 +220,34 @@
         <button onclick="resetSudoku()">Clear</button>
       </div>
       <div id="sudokuMessage" class="message"></div>
+    </div>
+
+    <!-- Block Blast Game -->
+    <div class="game-section">
+      <div class="game-title">🧱 Block Blast (Advanced)</div>
+      <div class="blast-diff-selector">
+        <button class="diff-btn active" onclick="setDifficulty('easy')">Easy</button>
+        <button class="diff-btn" onclick="setDifficulty('medium')">Medium</button>
+        <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+      </div>
+      <div class="blast-container">
+        <div class="blast-board" id="blastBoard"></div>
+        <div class="blast-sidebar">
+          <div class="blast-stats">
+            <div>Score: <span id="blastScore">0</span></div>
+            <div>High Score: <span id="blastHighScore">0</span></div>
+            <div>Moves: <span id="blastMoves">0</span></div>
+            <div>Combo: <span id="blastCombo">0</span>x</div>
+            <div id="blastGameOver" style="color: #f44336; display: none; margin-top: 10px; font-size: 16px;">Game Over!</div>
+            <div id="blastComboMsg" class="blast-combo"></div>
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Next Blocks:</div>
+            <div class="blast-preview" id="blastPreview"></div>
+          </div>
+          <button onclick="resetBlastGame()" style="width: 100%;">New Game</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -316,6 +430,210 @@
 
     // Initialize Sudoku on page load
     initSudoku();
+
+    // Block Blast Game
+    let blastBoard = Array(25).fill(0);
+    let blastScore = 0;
+    let blastHighScore = localStorage.getItem('blastHighScore') || 0;
+    let blastMoves = 0;
+    let blastCombo = 0;
+    let nextBlocks = [];
+    let difficulty = 'easy';
+    const blockShapes = [
+      [1], [2], [3], [4], [5],
+      [1, 1], [2, 2], [3, 3], [4, 4],
+      [1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4],
+      [1, 1, 1, 1], [2, 2, 2, 2],
+      [1, 1, 1, 1, 1]
+    ];
+
+    function setDifficulty(diff) {
+      difficulty = diff;
+      document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      resetBlastGame();
+    }
+
+    function generateNextBlocks() {
+      nextBlocks = [];
+      const blockCount = difficulty === 'easy' ? 3 : difficulty === 'medium' ? 3 : 2;
+      for (let i = 0; i < blockCount; i++) {
+        nextBlocks.push(blockShapes[Math.floor(Math.random() * blockShapes.length)]);
+      }
+      updateBlastPreview();
+    }
+
+    function initBlastGame() {
+      blastBoard = Array(25).fill(0);
+      blastScore = 0;
+      blastMoves = 0;
+      blastCombo = 0;
+      
+      // Add obstacles based on difficulty
+      if (difficulty === 'hard') {
+        for (let i = 0; i < 3; i++) {
+          blastBoard[Math.floor(Math.random() * 25)] = -1; // -1 = obstacle
+        }
+      }
+      
+      generateNextBlocks();
+      renderBlastBoard();
+      document.getElementById('blastGameOver').style.display = 'none';
+      document.getElementById('blastHighScore').textContent = blastHighScore;
+    }
+
+    function renderBlastBoard() {
+      const board = document.getElementById('blastBoard');
+      board.innerHTML = '';
+      for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'blast-cell';
+        if (blastBoard[i] === -1) {
+          cell.className += ' obstacle';
+          cell.textContent = '🔒';
+        } else if (blastBoard[i] > 0) {
+          cell.className += ` filled-${blastBoard[i]}`;
+          if (blastBoard[i] > 5) {
+            cell.className += ' blast-power-up';
+            cell.textContent = '⚡';
+          } else {
+            cell.textContent = blastBoard[i];
+          }
+        }
+        cell.addEventListener('click', () => placeBlock(i));
+        board.appendChild(cell);
+      }
+      document.getElementById('blastScore').textContent = blastScore;
+      document.getElementById('blastMoves').textContent = blastMoves;
+      document.getElementById('blastCombo').textContent = blastCombo;
+    }
+
+    function updateBlastPreview() {
+      const preview = document.getElementById('blastPreview');
+      preview.innerHTML = '';
+      nextBlocks.forEach((block, idx) => {
+        const cell = document.createElement('div');
+        cell.className = `blast-preview-cell filled-${block[0]}`;
+        cell.textContent = block[0];
+        cell.title = `Block ${idx + 1}`;
+        cell.style.cursor = selectedBlockIndex === idx ? 'grab' : 'pointer';
+        cell.addEventListener('click', () => selectBlockToDrop(idx));
+        preview.appendChild(cell);
+      });
+    }
+
+    let selectedBlockIndex = 0;
+    function selectBlockToDrop(idx) {
+      selectedBlockIndex = idx;
+      updateBlastPreview();
+    }
+
+    function placeBlock(index) {
+      if (selectedBlockIndex >= nextBlocks.length) return;
+      const block = nextBlocks[selectedBlockIndex];
+      const row = Math.floor(index / 5);
+      const col = index % 5;
+
+      let canPlace = true;
+      for (let i = 0; i < block.length; i++) {
+        const pos = row * 5 + col + i;
+        if (col + i >= 5 || pos >= 25 || (blastBoard[pos] > 0 && blastBoard[pos] !== -1)) {
+          canPlace = false;
+          break;
+        }
+      }
+
+      if (canPlace) {
+        for (let i = 0; i < block.length; i++) {
+          const pos = row * 5 + col + i;
+          if (blastBoard[pos] !== -1) {
+            blastBoard[pos] = block[i];
+          }
+        }
+        blastMoves++;
+        nextBlocks.splice(selectedBlockIndex, 1);
+        selectedBlockIndex = 0;
+        generateNextBlocks();
+        const clears = checkLines();
+        if (clears === 0) blastCombo = 0;
+        renderBlastBoard();
+      }
+    }
+
+    function checkLines() {
+      let cleared = 0;
+      let comboClear = false;
+      
+      for (let row = 0; row < 5; row++) {
+        let fullRow = true;
+        for (let col = 0; col < 5; col++) {
+          if (blastBoard[row * 5 + col] <= 0) {
+            fullRow = false;
+            break;
+          }
+        }
+        if (fullRow) {
+          for (let col = 0; col < 5; col++) {
+            blastBoard[row * 5 + col] = 0;
+          }
+          cleared++;
+          comboClear = true;
+        }
+      }
+      
+      for (let col = 0; col < 5; col++) {
+        let fullCol = true;
+        for (let row = 0; row < 5; row++) {
+          if (blastBoard[row * 5 + col] <= 0) {
+            fullCol = false;
+            break;
+          }
+        }
+        if (fullCol) {
+          for (let row = 0; row < 5; row++) {
+            blastBoard[row * 5 + col] = 0;
+          }
+          cleared++;
+          comboClear = true;
+        }
+      }
+      
+      if (comboClear) {
+        blastCombo++;
+        const multiplier = blastCombo * 10;
+        const points = cleared * 50 * blastCombo;
+        blastScore += points;
+        
+        const comboMsg = document.getElementById('blastComboMsg');
+        comboMsg.textContent = `🔥 ${blastCombo}x Combo! +${points} pts`;
+        setTimeout(() => comboMsg.textContent = '', 1500);
+        
+        if (cleared > 2) {
+          blastScore += 100 * (cleared - 2);
+        }
+        
+        setTimeout(() => {
+          if (checkLines() > 0) {
+            renderBlastBoard();
+          }
+        }, 200);
+      }
+      
+      if (blastScore > blastHighScore) {
+        blastHighScore = blastScore;
+        localStorage.setItem('blastHighScore', blastHighScore);
+        document.getElementById('blastHighScore').textContent = blastHighScore;
+      }
+      
+      return cleared;
+    }
+
+    function resetBlastGame() {
+      initBlastGame();
+    }
+
+    document.getElementById('blastHighScore').textContent = blastHighScore;
+    initBlastGame();
   </script>
 </body>
 </html>
