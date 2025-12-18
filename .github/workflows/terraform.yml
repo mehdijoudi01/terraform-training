@@ -48,23 +48,23 @@ jobs:
             var_id=$(echo "$vars_json" | jq -r --arg k "$key" '.data[] | select(.attributes.key==$k) | .id' | head -n1)
 
             payload=$(cat <<EOF
-{
-  "data": {
-    "type": "vars",
-    "attributes": {
-      "key": "$key",
-      "value": "$value",
-      "category": "env",
-      "hcl": false,
-      "sensitive": $sensitive
-    },
-    "relationships": {
-      "workspace": { "data": { "id": "$ws_id", "type": "workspaces" } }
-    }
-  }
-}
-EOF
-)
+            {
+              "data": {
+                "type": "vars",
+                "attributes": {
+                  "key": "$key",
+                  "value": "$value",
+                  "category": "env",
+                  "hcl": false,
+                  "sensitive": $sensitive
+                },
+                "relationships": {
+                  "workspace": { "data": { "id": "$ws_id", "type": "workspaces" } }
+                }
+              }
+            }
+            EOF
+            )
 
             if [ -n "$var_id" ]; then
               curl -sS -X PATCH \
