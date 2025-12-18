@@ -54,6 +54,46 @@
     .error { color: #f44336; }
     .info { color: #2196F3; }
     .rps-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
+    .sudoku-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 0;
+      border: 3px solid #667eea;
+      background: #667eea;
+    }
+    .sudoku-cell {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ccc;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+      background: white;
+      cursor: pointer;
+      color: #333;
+    }
+    .sudoku-cell:nth-child(3n) { border-right: 3px solid #667eea; }
+    .sudoku-cell:nth-child(n+19):nth-child(-n+27),
+    .sudoku-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #667eea; }
+    .sudoku-cell.fixed { background: #f0f0f0; color: #333; font-weight: bold; }
+    .sudoku-cell.selected { background: #e3f2fd; }
+    .sudoku-cell.error { background: #ffebee; color: #c62828; }
+    .sudoku-controls { margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    @media (max-width: 600px) {
+      .sudoku-cell { width: 32px; height: 32px; font-size: 16px; }
+      .container { padding: 20px; max-width: 100%; }
+      h1 { font-size: 20px; }
+      .game-title { font-size: 16px; }
+    }
+
   </style>
 </head>
 <body>
@@ -81,6 +121,19 @@
         <button onclick="playRPS('scissors')">✂️ Scissors</button>
       </div>
       <div id="rpsMessage" class="message"></div>
+    </div>
+
+    <!-- Sudoku Game -->
+    <div class="game-section">
+      <div class="game-title">🔢 Sudoku</div>
+      <div class="sudoku-container">
+        <div class="sudoku-grid" id="sudokuGrid"></div>
+      </div>
+      <div class="sudoku-controls">
+        <button onclick="solveSudoku()">Solve</button>
+        <button onclick="resetSudoku()">Clear</button>
+      </div>
+      <div id="sudokuMessage" class="message"></div>
     </div>
   </div>
 
@@ -155,6 +208,114 @@
 
     // Initialize
     document.getElementById('attemptsLeft').textContent = `Attempts: 0/${maxAttempts}`;
+
+    // Sudoku Game
+    const sudokuPuzzle = [
+      [5,3,0,0,7,0,0,0,0],
+      [6,0,0,1,9,5,0,0,0],
+      [0,9,8,0,0,0,0,6,0],
+      [8,0,0,0,6,0,0,0,3],
+      [4,0,0,8,0,3,0,0,1],
+      [7,0,0,0,2,0,0,0,6],
+      [0,6,0,0,0,0,2,8,0],
+      [0,0,0,4,1,9,0,0,5],
+      [0,0,0,0,8,0,0,7,9]
+    ];
+    let sudokuBoard = JSON.parse(JSON.stringify(sudokuPuzzle));
+    let selectedCell = null;
+
+    function initSudoku() {
+      const grid = document.getElementById('sudokuGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < 81; i++) {
+        const cell = document.createElement('input');
+        cell.type = 'number';
+        cell.min = '1';
+        cell.max = '9';
+        cell.className = 'sudoku-cell';
+        const row = Math.floor(i / 9);
+        const col = i % 9;
+        if (sudokuPuzzle[row][col] !== 0) {
+          cell.value = sudokuPuzzle[row][col];
+          cell.className += ' fixed';
+          cell.readOnly = true;
+        } else if (sudokuBoard[row][col] !== 0) {
+          cell.value = sudokuBoard[row][col];
+        }
+        cell.addEventListener('click', () => selectCell(cell, i));
+        cell.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (val && (val < 1 || val > 9)) e.target.value = '';
+          sudokuBoard[row][col] = val ? parseInt(val) : 0;
+        });
+        grid.appendChild(cell);
+      }
+    }
+
+    function selectCell(cell, index) {
+      if (selectedCell) selectedCell.classList.remove('selected');
+      cell.classList.add('selected');
+      selectedCell = cell;
+    }
+
+    function solveSudoku() {
+      const solver = JSON.parse(JSON.stringify(sudokuPuzzle));
+      if (solve(solver)) {
+        const grid = document.getElementById('sudokuGrid');
+        const cells = grid.querySelectorAll('.sudoku-cell');
+        for (let i = 0; i < 81; i++) {
+          const row = Math.floor(i / 9);
+          const col = i % 9;
+          if (sudokuPuzzle[row][col] === 0) {
+            cells[i].value = solver[row][col];
+            sudokuBoard[row][col] = solver[row][col];
+          }
+        }
+        document.getElementById('sudokuMessage').textContent = '✅ Sudoku solved!';
+        document.getElementById('sudokuMessage').className = 'message success';
+      }
+    }
+
+    function solve(board) {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          if (board[row][col] === 0) {
+            for (let num = 1; num <= 9; num++) {
+              if (isValid(board, row, col, num)) {
+                board[row][col] = num;
+                if (solve(board)) return true;
+                board[row][col] = 0;
+              }
+            }
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function isValid(board, row, col, num) {
+      for (let i = 0; i < 9; i++) {
+        if (board[row][i] === num || board[i][col] === num) return false;
+      }
+      const startRow = Math.floor(row / 3) * 3;
+      const startCol = Math.floor(col / 3) * 3;
+      for (let i = startRow; i < startRow + 3; i++) {
+        for (let j = startCol; j < startCol + 3; j++) {
+          if (board[i][j] === num) return false;
+        }
+      }
+      return true;
+    }
+
+    function resetSudoku() {
+      sudokuBoard = JSON.parse(JSON.stringify(sudokuPuzzle));
+      document.getElementById('sudokuMessage').textContent = '';
+      initSudoku();
+    }
+
+    // Initialize Sudoku on page load
+    initSudoku();
   </script>
 </body>
 </html>
