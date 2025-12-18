@@ -1,6 +1,160 @@
 <!DOCTYPE html>
 <html>
-<head><title>Hello from Terraform!</title></head>
-<body><h1>Deployed via Terraform + GitHub Actions on Render</h1></body>
-Welcome!!
+<head>
+  <title>Hello from Terraform!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 500px;
+    }
+    h1 { color: #333; margin: 0 0 20px 0; }
+    .game-section { margin-top: 30px; }
+    .game-title { font-size: 20px; font-weight: bold; color: #667eea; margin-bottom: 15px; }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 150px;
+      border: 2px solid #667eea;
+      border-radius: 5px;
+      margin: 10px 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px 5px;
+      transition: background 0.3s;
+    }
+    button:hover { background: #764ba2; }
+    .message {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      min-height: 30px;
+    }
+    .success { color: #4CAF50; }
+    .error { color: #f44336; }
+    .info { color: #2196F3; }
+    .rps-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Deployed via Terraform + GitHub Actions on Render</h1>
+    <p style="color: #666;">Welcome! Play a mini game to test this deployment!</p>
+
+    <!-- Number Guessing Game -->
+    <div class="game-section">
+      <div class="game-title">🎯 Guess the Number Game</div>
+      <p style="color: #666; font-size: 14px;">I'm thinking of a number between 1 and 100</p>
+      <input type="number" id="guessInput" min="1" max="100" placeholder="Enter your guess">
+      <button onclick="checkGuess()">Guess!</button>
+      <button onclick="resetGame()">New Game</button>
+      <div id="guessMessage" class="message"></div>
+      <div id="attemptsLeft" style="color: #999; font-size: 14px;"></div>
+    </div>
+
+    <!-- Rock Paper Scissors -->
+    <div class="game-section">
+      <div class="game-title">✌️ Rock Paper Scissors</div>
+      <div class="rps-buttons">
+        <button onclick="playRPS('rock')">🪨 Rock</button>
+        <button onclick="playRPS('paper')">📄 Paper</button>
+        <button onclick="playRPS('scissors')">✂️ Scissors</button>
+      </div>
+      <div id="rpsMessage" class="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Number Guessing Game
+    let secretNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+    const maxAttempts = 7;
+
+    function checkGuess() {
+      const guess = parseInt(document.getElementById('guessInput').value);
+      const messageEl = document.getElementById('guessMessage');
+      
+      if (!guess || guess < 1 || guess > 100) {
+        messageEl.textContent = '❌ Please enter a valid number between 1 and 100';
+        messageEl.className = 'message error';
+        return;
+      }
+      
+      attempts++;
+      
+      if (guess === secretNumber) {
+        messageEl.textContent = `✅ You won! The number was ${secretNumber}. It took you ${attempts} attempts!`;
+        messageEl.className = 'message success';
+      } else if (guess < secretNumber) {
+        messageEl.textContent = `📈 Too low! Try higher.`;
+        messageEl.className = 'message info';
+      } else {
+        messageEl.textContent = `📉 Too high! Try lower.`;
+        messageEl.className = 'message info';
+      }
+      
+      document.getElementById('attemptsLeft').textContent = `Attempts: ${attempts}/${maxAttempts}`;
+      
+      if (attempts >= maxAttempts && guess !== secretNumber) {
+        messageEl.textContent = `😢 Game Over! The number was ${secretNumber}`;
+        messageEl.className = 'message error';
+      }
+    }
+
+    function resetGame() {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      document.getElementById('guessInput').value = '';
+      document.getElementById('guessMessage').textContent = '';
+      document.getElementById('attemptsLeft').textContent = '';
+    }
+
+    // Rock Paper Scissors
+    function playRPS(playerChoice) {
+      const choices = ['rock', 'paper', 'scissors'];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+      const messageEl = document.getElementById('rpsMessage');
+      
+      let result = '';
+      if (playerChoice === computerChoice) {
+        result = `It's a tie! Both chose ${playerChoice} 🤝`;
+      } else if (
+        (playerChoice === 'rock' && computerChoice === 'scissors') ||
+        (playerChoice === 'paper' && computerChoice === 'rock') ||
+        (playerChoice === 'scissors' && computerChoice === 'paper')
+      ) {
+        result = `You win! ${playerChoice} beats ${computerChoice} 🎉`;
+        messageEl.className = 'message success';
+      } else {
+        result = `You lose! ${computerChoice} beats ${playerChoice} 🤖`;
+        messageEl.className = 'message error';
+      }
+      
+      messageEl.textContent = result;
+    }
+
+    // Initialize
+    document.getElementById('attemptsLeft').textContent = `Attempts: 0/${maxAttempts}`;
+  </script>
+</body>
 </html>
