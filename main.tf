@@ -19,8 +19,8 @@ terraform {
 provider "render" {
 }
 
-resource "render_static_site" "example" {
-  name          = "render-terraform-example-try6"
+resource "render_static_site_test" "example" {
+  name          = "render-terraform-example-try"
   repo_url      = "https://github.com/mehdijoudi01/terraform-training"
   branch        = "main"
   build_command = "" # no build needed for html file, ---- ken 3ana container we prepare Dockerfile
@@ -30,5 +30,5 @@ resource "render_static_site" "example" {
 }
 
 output "site_url" {
-  value = render_static_site.example.url
+  value = render_static_site_test.example.url
 }
