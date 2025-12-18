@@ -14,13 +14,12 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100dvh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 20px;
             transition: background 0.3s ease;
-            overflow-y: auto;
         }
 
         body.dark-mode {
@@ -68,41 +67,34 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            max-width: 600px;
+            padding: 30px;
+            max-width: 500px;
             width: 100%;
-            max-height: calc(100dvh - 20px);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         h1 {
             color: #333;
-            font-size: 2em;
-            margin-bottom: 5px;
+            font-size: 2.5em;
+            margin-bottom: 10px;
             letter-spacing: 2px;
         }
 
         .instructions {
             color: #666;
-            font-size: 0.85em;
-            margin-bottom: 10px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
         }
 
         .game-board {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
-            margin-bottom: 15px;
-            width: min(480px, 100%);
-            margin-left: auto;
-            margin-right: auto;
+            margin-bottom: 20px;
         }
 
         .tile {
@@ -110,7 +102,7 @@
             aspect-ratio: 1;
             border: 2px solid #d3d6da;
             border-radius: 4px;
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-size: 2em;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -176,33 +168,24 @@
             animation: bounce 0.3s;
         }
 
-        /* Keyboard layout improvements */
         .keyboard {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
             gap: 6px;
+            margin-bottom: 20px;
         }
 
         .key {
-            padding: 18px 12px;
+            padding: 8px 6px;
             background: #d3d6da;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 0.8em;
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.1s ease;
             color: #333;
-            min-width: 45px;
-            touch-action: manipulation;
         }
 
         .key:hover {
@@ -236,8 +219,8 @@
 
         .controls {
             display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         button.action {
@@ -247,11 +230,10 @@
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 0.95em;
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
-            touch-action: manipulation;
         }
 
         button.action:hover {
@@ -266,10 +248,10 @@
 
         .message {
             text-align: center;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
-            min-height: 25px;
-            padding: 8px;
+            min-height: 30px;
+            padding: 10px;
             border-radius: 4px;
             margin-bottom: 10px;
         }
@@ -291,10 +273,10 @@
 
         .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 8px;
-            margin-top: 15px;
-            padding-top: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 2px solid #e0e0e0;
         }
 
@@ -304,13 +286,13 @@
 
         .stat-label {
             color: #999;
-            font-size: 0.75em;
-            margin-bottom: 3px;
+            font-size: 0.8em;
+            margin-bottom: 5px;
         }
 
         .stat-value {
             color: #333;
-            font-size: 1.3em;
+            font-size: 1.5em;
             font-weight: bold;
         }
 
@@ -335,10 +317,10 @@
 
         .timer {
             text-align: center;
-            font-size: 1em;
+            font-size: 1.2em;
             color: #667eea;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         body.dark-mode .timer {
@@ -346,12 +328,11 @@
         }
 
         .definition {
-            margin-top: 10px;
-            padding: 12px;
+            margin-top: 15px;
+            padding: 15px;
             background: #f0f0f0;
             border-radius: 8px;
             border-left: 4px solid #667eea;
-            font-size: 0.9em;
         }
 
         body.dark-mode .definition {
@@ -455,167 +436,20 @@
             min-width: 20px;
         }
 
-        /* Hidden input for mobile keyboard */
-        #hiddenInput {
+        .mobile-input {
             position: absolute;
             opacity: 0;
             pointer-events: none;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
-
-            .container {
-                padding: 15px 10px;
-                max-width: 100%;
-                max-height: 98dvh;
-            }
-
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 3px;
-            }
-
-            .instructions {
-                font-size: 0.8em;
-                margin-bottom: 8px;
-            }
-
-            .tile {
-                font-size: 1.6em;
-            }
-
-            .game-board {
-                gap: 5px;
-                margin-bottom: 12px;
-            }
-
-            .keyboard {
-                gap: 6px;
-                margin-bottom: 12px;
-                display: flex;
-            }
-
-            .keyboard-row {
-                gap: 4px;
-            }
-
-            .key {
-                padding: 12px 8px;
-                font-size: 0.95em;
-                min-width: 34px;
-            }
-
-            .controls {
-                gap: 6px;
-                margin-bottom: 12px;
-            }
-
-            button.action {
-                padding: 10px;
-                font-size: 0.85em;
-            }
-
-            .stats {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
-                margin-top: 12px;
-                padding-top: 12px;
-            }
-
-            .stat-value {
-                font-size: 1.1em;
-            }
-
-            .stat-label {
-                font-size: 0.7em;
-            }
-
-            .tile {
-                font-size: 1.4em;
-            }
-
-            .game-board {
-                gap: 4px;
-            }
-                padding: 6px;
-                min-height: 20px;
-            }
-
-            .definition {
-                padding: 10px;
-                font-size: 0.85em;
-                margin-top: 8px;
-            }
-
-            .theme-toggle {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9em;
-                top: 5px;
-                right: 5px;
-            }
-
-            .stats-content {
-                padding: 20px;
-                width: 95%;
-            }
-
-            .share-btn {
-                margin-top: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 12px 8px;
-            }
-
-            h1 {
-                font-size: 1.5em;
-                letter-spacing: 1px;
-            }
-
-            .tile {
-                font-size: 1.25em;
-            }
-
-            .game-board {
-                gap: 3px;
-            }
-
-            .keyboard-row {
-                gap: 3px;
-            }
-
-            .key {
-                padding: 11px 6px;
-                font-size: 0.9em;
-                min-width: 30px;
-            }
-
-            button.action {
-                padding: 9px;
-                font-size: 0.8em;
-            }
-
-            .stat-value {
-                font-size: 1em;
-            }
-
-            .definition h3 {
-                font-size: 1em;
-            }
+            height: 1px;
+            width: 1px;
+            left: -9999px;
+            top: 0;
         }
     </style>
 </head>
 <body>
+    <input id="mobileInput" class="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text" aria-label="Hidden keyboard input">
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
-    
-    <input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     
     <div class="container">
         <div class="header">
@@ -933,6 +767,44 @@
             document.getElementById('statsModal').classList.remove('show');
         }
 
+        // Mobile input helpers to trigger phone keyboard
+        function focusMobileInput() {
+            if (!mobileInput) return;
+            mobileInput.focus({ preventScroll: true });
+        }
+
+        function ensureMobileFocusBindings() {
+            if (focusHandlersBound) return;
+            const targets = [document.body, document.querySelector('.container'), gameBoard, keyboard];
+            targets.forEach(target => {
+                if (!target) return;
+                target.addEventListener('pointerdown', focusMobileInput);
+                target.addEventListener('click', focusMobileInput);
+            });
+            focusHandlersBound = true;
+        }
+
+        function handleMobileBeforeInput(event) {
+            if (event.inputType === 'deleteContentBackward') {
+                event.preventDefault();
+                deleteLetter();
+            }
+        }
+
+        function handleMobileInput(event) {
+            if (!mobileInput) return;
+            const value = mobileInput.value.toUpperCase().replace(/[^A-Z]/g, '');
+            for (const char of value) {
+                addLetter(char);
+            }
+            mobileInput.value = '';
+        }
+
+        if (mobileInput) {
+            mobileInput.addEventListener('beforeinput', handleMobileBeforeInput);
+            mobileInput.addEventListener('input', handleMobileInput);
+        }
+
         // Share results
         function shareResults() {
             const emojiGrid = guesses.map(guess => {
@@ -1013,44 +885,10 @@
         const keyboard = document.getElementById('keyboard');
         const message = document.getElementById('message');
         const timerDisplay = document.getElementById('timer');
-        const hiddenInput = document.getElementById('hiddenInput');
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const mobileInput = document.getElementById('mobileInput');
+        let focusHandlersBound = false;
 
         updateStatsDisplay();
-
-        // Mobile keyboard handling
-        if (isMobile) {
-            // Focus on game board to trigger mobile keyboard
-            document.addEventListener('click', (e) => {
-                if (!gameOver && e.target.closest('.container')) {
-                    hiddenInput.focus();
-                }
-            });
-
-            hiddenInput.addEventListener('input', (e) => {
-                const value = e.target.value.toUpperCase();
-                if (value) {
-                    const lastChar = value[value.length - 1];
-                    if (/^[A-Z]$/.test(lastChar)) {
-                        addLetter(lastChar);
-                    }
-                    hiddenInput.value = '';
-                }
-            });
-
-            hiddenInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace') {
-                    e.preventDefault();
-                    deleteLetter();
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    submitGuess();
-                }
-            });
-
-            // Auto-focus when game starts
-            setTimeout(() => hiddenInput.focus(), 500);
-        }
 
         async function initializeGame() {
             // Load words from API on first run
@@ -1070,6 +908,11 @@
             
             resetTimer();
             startTimer();
+            ensureMobileFocusBindings();
+            if (mobileInput) {
+                mobileInput.value = '';
+                focusMobileInput();
+            }
             
             gameBoard.innerHTML = '';
             for (let i = 0; i < 30; i++) {
@@ -1081,37 +924,19 @@
 
             initializeKeyboard();
             document.addEventListener('keydown', handleKeyPress);
-            
-            // Re-focus on mobile
-            if (isMobile) {
-                setTimeout(() => hiddenInput.focus(), 300);
-            }
         }
 
         function initializeKeyboard() {
-            // AZERTY keyboard layout
-            const keyboardRows = [
-                ['A', 'Z', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                ['Q', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M'],
-                ['W', 'X', 'C', 'V', 'B', 'N']
-            ];
-            
+            const keys = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
             keyboard.innerHTML = '';
             
-            keyboardRows.forEach(row => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'keyboard-row';
-                
-                row.forEach(key => {
-                    const button = document.createElement('button');
-                    button.textContent = key;
-                    button.className = 'key';
-                    button.id = `key-${key}`;
-                    button.onclick = () => addLetter(key);
-                    rowDiv.appendChild(button);
-                });
-                
-                keyboard.appendChild(rowDiv);
+            keys.forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.className = 'key';
+                button.id = `key-${key}`;
+                button.onclick = () => addLetter(key);
+                keyboard.appendChild(button);
             });
         }
 
@@ -1281,9 +1106,6 @@
         function disableGame() {
             const keys = document.querySelectorAll('.key');
             keys.forEach(key => key.disabled = true);
-            if (isMobile) {
-                hiddenInput.blur();
-            }
         }
 
         function showMessage(text, type) {
