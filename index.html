@@ -1,639 +1,469 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Hello from Terraform!</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .container {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      text-align: center;
-      max-width: 500px;
-    }
-    h1 { color: #333; margin: 0 0 20px 0; }
-    .game-section { margin-top: 30px; }
-    .game-title { font-size: 20px; font-weight: bold; color: #667eea; margin-bottom: 15px; }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 150px;
-      border: 2px solid #667eea;
-      border-radius: 5px;
-      margin: 10px 5px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px 5px;
-      transition: background 0.3s;
-    }
-    button:hover { background: #764ba2; }
-    .message {
-      margin-top: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      min-height: 30px;
-    }
-    .success { color: #4CAF50; }
-    .error { color: #f44336; }
-    .info { color: #2196F3; }
-    .rps-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
-    .sudoku-container {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .sudoku-grid {
-      display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 0;
-      border: 3px solid #667eea;
-      background: #667eea;
-    }
-    .sudoku-cell {
-      width: 40px;
-      height: 40px;
-      border: 1px solid #ccc;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      padding: 0;
-      background: white;
-      cursor: pointer;
-      color: #333;
-    }
-    .sudoku-cell:nth-child(3n) { border-right: 3px solid #667eea; }
-    .sudoku-cell:nth-child(n+19):nth-child(-n+27),
-    .sudoku-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #667eea; }
-    .sudoku-cell.fixed { background: #f0f0f0; color: #333; font-weight: bold; }
-    .sudoku-cell.selected { background: #e3f2fd; }
-    .sudoku-cell.error { background: #ffebee; color: #c62828; }
-    .sudoku-controls { margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    @media (max-width: 600px) {
-      .sudoku-cell { width: 32px; height: 32px; font-size: 16px; }
-      .container { padding: 20px; max-width: 100%; }
-      h1 { font-size: 20px; }
-      .game-title { font-size: 16px; }
-    }
-    .blast-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 15px; align-items: flex-start; }
-    .blast-board {
-      display: grid;
-      grid-template-columns: repeat(5, 50px);
-      gap: 2px;
-      background: #667eea;
-      padding: 5px;
-      border-radius: 5px;
-    }
-    .blast-cell {
-      width: 50px;
-      height: 50px;
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 3px;
-      transition: all 0.2s;
-    }
-    .blast-cell:hover { background: #e8e8e8; }
-    .blast-cell.filled-1 { background: #FF6B6B; color: white; }
-    .blast-cell.filled-2 { background: #4ECDC4; color: white; }
-    .blast-cell.filled-3 { background: #FFE66D; color: #333; }
-    .blast-cell.filled-4 { background: #95E1D3; color: white; }
-    .blast-cell.filled-5 { background: #C7CEEA; color: white; }
-    .blast-cell.matched { animation: pop 0.3s; }
-    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(0); } }
-    .blast-sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .blast-stats {
-      background: #f5f5f5;
-      padding: 15px;
-      border-radius: 8px;
-      min-width: 150px;
-    }
-    .blast-stats div { margin: 8px 0; font-weight: bold; }
-    .blast-preview {
-      display: grid;
-      grid-template-columns: repeat(2, 40px);
-      gap: 2px;
-      background: #f5f5f5;
-      padding: 8px;
-      border-radius: 5px;
-      min-height: 84px;
-    }
-    .blast-preview-cell {
-      width: 40px;
-      height: 40px;
-      background: #e8e8e8;
-      border: 1px solid #ddd;
-      border-radius: 2px;
-      cursor: grab;
-      font-weight: bold;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .blast-preview-cell.filled-1 { background: #FF6B6B; color: white; }
-    .blast-preview-cell.filled-2 { background: #4ECDC4; color: white; }
-    .blast-preview-cell.filled-3 { background: #FFE66D; color: #333; }
-    .blast-preview-cell.filled-4 { background: #95E1D3; color: white; }
-    .blast-preview-cell.filled-5 { background: #C7CEEA; color: white; }
-    @media (max-width: 600px) {
-      .blast-container { flex-direction: column; }
-      .blast-board { grid-template-columns: repeat(5, 40px); }
-      .blast-cell { width: 40px; height: 40px; font-size: 14px; }
-      .blast-preview-cell { width: 30px; height: 30px; font-size: 12px; }
-    }
-    .blast-stats div { color: #333; }
-    .blast-combo { color: #FF6B6B; font-size: 12px; margin-top: 5px; }
-    .blast-power-up { 
-      background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-      animation: pulse 0.5s infinite;
-    }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.8); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 1); } }
-    .blast-cell.obstacle { background: #333 !important; color: white !important; }
-    .blast-diff-selector { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
-    .diff-btn { padding: 5px 10px; background: #e0e0e0; border: 2px solid #999; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; }
-    .diff-btn.active { background: #667eea; color: white; border-color: #667eea; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Space - Explore Innovation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
 
-  </style>
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: slideInDown 0.8s ease;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.8s ease;
+            opacity: 0.9;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .gallery h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            height: 300px;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+            z-index: 2;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 0.3;
+        }
+
+        .gallery-item-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            color: white;
+            z-index: 3;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-item-text {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .social-links {
+            margin: 1rem 0;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            line-height: 40px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🚀 Deployed via Terraform + GitHub Actions on Render</h1>
-    <p style="color: #666;">Welcome! Play a mini game to test this deployment!</p>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">✨ CREATIVE</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-    <!-- Number Guessing Game -->
-    <div class="game-section">
-      <div class="game-title">🎯 Guess the Number Game</div>
-      <p style="color: #666; font-size: 14px;">I'm thinking of a number between 1 and 100</p>
-      <input type="number" id="guessInput" min="1" max="100" placeholder="Enter your guess">
-      <button onclick="checkGuess()">Guess!</button>
-      <button onclick="resetGame()">New Game</button>
-      <div id="guessMessage" class="message"></div>
-      <div id="attemptsLeft" style="color: #999; font-size: 14px;"></div>
-    </div>
-
-    <!-- Rock Paper Scissors -->
-    <div class="game-section">
-      <div class="game-title">✌️ Rock Paper Scissors</div>
-      <div class="rps-buttons">
-        <button onclick="playRPS('rock')">🪨 Rock</button>
-        <button onclick="playRPS('paper')">📄 Paper</button>
-        <button onclick="playRPS('scissors')">✂️ Scissors</button>
-      </div>
-      <div id="rpsMessage" class="message"></div>
-    </div>
-
-    <!-- Sudoku Game -->
-    <div class="game-section">
-      <div class="game-title">🔢 Sudoku</div>
-      <div class="sudoku-container">
-        <div class="sudoku-grid" id="sudokuGrid"></div>
-      </div>
-      <div class="sudoku-controls">
-        <button onclick="solveSudoku()">Solve</button>
-        <button onclick="resetSudoku()">Clear</button>
-      </div>
-      <div id="sudokuMessage" class="message"></div>
-    </div>
-
-    <!-- Block Blast Game -->
-    <div class="game-section">
-      <div class="game-title">🧱 Block Blast (Advanced)</div>
-      <div class="blast-diff-selector">
-        <button class="diff-btn active" onclick="setDifficulty('easy')">Easy</button>
-        <button class="diff-btn" onclick="setDifficulty('medium')">Medium</button>
-        <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
-      </div>
-      <div class="blast-container">
-        <div class="blast-board" id="blastBoard"></div>
-        <div class="blast-sidebar">
-          <div class="blast-stats">
-            <div>Score: <span id="blastScore">0</span></div>
-            <div>High Score: <span id="blastHighScore">0</span></div>
-            <div>Moves: <span id="blastMoves">0</span></div>
-            <div>Combo: <span id="blastCombo">0</span>x</div>
-            <div id="blastGameOver" style="color: #f44336; display: none; margin-top: 10px; font-size: 16px;">Game Over!</div>
-            <div id="blastComboMsg" class="blast-combo"></div>
-          </div>
-          <div>
-            <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Next Blocks:</div>
-            <div class="blast-preview" id="blastPreview"></div>
-          </div>
-          <button onclick="resetBlastGame()" style="width: 100%;">New Game</button>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="stars" id="starfield"></div>
+        <div class="hero-content">
+            <h1>Welcome to Creative Space</h1>
+            <p>Where Innovation Meets Design</p>
+            <a href="#features" class="cta-button">Explore Now</a>
         </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <script>
-    // Number Guessing Game
-    let secretNumber = Math.floor(Math.random() * 100) + 1;
-    let attempts = 0;
-    const maxAttempts = 7;
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">🎨</div>
+                <h3>Creative Design</h3>
+                <p>Beautiful and modern designs that captivate your audience</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Optimized performance for the best user experience</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📱</div>
+                <h3>Fully Responsive</h3>
+                <p>Perfect on all devices from mobile to desktop</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔒</div>
+                <h3>Secure & Safe</h3>
+                <p>Built with security best practices in mind</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🌟</div>
+                <h3>Premium Support</h3>
+                <p>Dedicated support team ready to help you succeed</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚀</div>
+                <h3>Future Ready</h3>
+                <p>Built with cutting-edge technology and standards</p>
+            </div>
+        </div>
+    </section>
 
-    function checkGuess() {
-      const guess = parseInt(document.getElementById('guessInput').value);
-      const messageEl = document.getElementById('guessMessage');
-      
-      if (!guess || guess < 1 || guess > 100) {
-        messageEl.textContent = '❌ Please enter a valid number between 1 and 100';
-        messageEl.className = 'message error';
-        return;
-      }
-      
-      attempts++;
-      
-      if (guess === secretNumber) {
-        messageEl.textContent = `✅ You won! The number was ${secretNumber}. It took you ${attempts} attempts!`;
-        messageEl.className = 'message success';
-      } else if (guess < secretNumber) {
-        messageEl.textContent = `📈 Too low! Try higher.`;
-        messageEl.className = 'message info';
-      } else {
-        messageEl.textContent = `📉 Too high! Try lower.`;
-        messageEl.className = 'message info';
-      }
-      
-      document.getElementById('attemptsLeft').textContent = `Attempts: ${attempts}/${maxAttempts}`;
-      
-      if (attempts >= maxAttempts && guess !== secretNumber) {
-        messageEl.textContent = `😢 Game Over! The number was ${secretNumber}`;
-        messageEl.className = 'message error';
-      }
-    }
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <h2>Our Showcase</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Alpha</h3>
+                    <p>Revolutionary design thinking</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Beta</h3>
+                    <p>Cutting-edge development</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Gamma</h3>
+                    <p>Innovation at its finest</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Delta</h3>
+                    <p>Future-focused solutions</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Epsilon</h3>
+                    <p>Excellence in execution</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-item-text">
+                    <h3>Project Zeta</h3>
+                    <p>Bold and creative vision</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    function resetGame() {
-      secretNumber = Math.floor(Math.random() * 100) + 1;
-      attempts = 0;
-      document.getElementById('guessInput').value = '';
-      document.getElementById('guessMessage').textContent = '';
-      document.getElementById('attemptsLeft').textContent = '';
-    }
+    <!-- Footer -->
+    <footer id="contact">
+        <h3>Get in Touch</h3>
+        <p>Ready to create something amazing?</p>
+        <div class="social-links">
+            <a href="#" title="Twitter">𝕏</a>
+            <a href="#" title="LinkedIn">in</a>
+            <a href="#" title="GitHub">⚙</a>
+            <a href="#" title="Email">✉</a>
+        </div>
+        <p>&copy; 2025 Creative Space. All rights reserved.</p>
+    </footer>
 
-    // Rock Paper Scissors
-    function playRPS(playerChoice) {
-      const choices = ['rock', 'paper', 'scissors'];
-      const computerChoice = choices[Math.floor(Math.random() * 3)];
-      const messageEl = document.getElementById('rpsMessage');
-      
-      let result = '';
-      if (playerChoice === computerChoice) {
-        result = `It's a tie! Both chose ${playerChoice} 🤝`;
-      } else if (
-        (playerChoice === 'rock' && computerChoice === 'scissors') ||
-        (playerChoice === 'paper' && computerChoice === 'rock') ||
-        (playerChoice === 'scissors' && computerChoice === 'paper')
-      ) {
-        result = `You win! ${playerChoice} beats ${computerChoice} 🎉`;
-        messageEl.className = 'message success';
-      } else {
-        result = `You lose! ${computerChoice} beats ${playerChoice} 🤖`;
-        messageEl.className = 'message error';
-      }
-      
-      messageEl.textContent = result;
-    }
-
-    // Initialize
-    document.getElementById('attemptsLeft').textContent = `Attempts: 0/${maxAttempts}`;
-
-    // Sudoku Game
-    const sudokuPuzzle = [
-      [5,3,0,0,7,0,0,0,0],
-      [6,0,0,1,9,5,0,0,0],
-      [0,9,8,0,0,0,0,6,0],
-      [8,0,0,0,6,0,0,0,3],
-      [4,0,0,8,0,3,0,0,1],
-      [7,0,0,0,2,0,0,0,6],
-      [0,6,0,0,0,0,2,8,0],
-      [0,0,0,4,1,9,0,0,5],
-      [0,0,0,0,8,0,0,7,9]
-    ];
-    let sudokuBoard = JSON.parse(JSON.stringify(sudokuPuzzle));
-    let selectedCell = null;
-
-    function initSudoku() {
-      const grid = document.getElementById('sudokuGrid');
-      grid.innerHTML = '';
-      for (let i = 0; i < 81; i++) {
-        const cell = document.createElement('input');
-        cell.type = 'number';
-        cell.min = '1';
-        cell.max = '9';
-        cell.className = 'sudoku-cell';
-        const row = Math.floor(i / 9);
-        const col = i % 9;
-        if (sudokuPuzzle[row][col] !== 0) {
-          cell.value = sudokuPuzzle[row][col];
-          cell.className += ' fixed';
-          cell.readOnly = true;
-        } else if (sudokuBoard[row][col] !== 0) {
-          cell.value = sudokuBoard[row][col];
-        }
-        cell.addEventListener('click', () => selectCell(cell, i));
-        cell.addEventListener('change', (e) => {
-          const val = e.target.value;
-          if (val && (val < 1 || val > 9)) e.target.value = '';
-          sudokuBoard[row][col] = val ? parseInt(val) : 0;
-        });
-        grid.appendChild(cell);
-      }
-    }
-
-    function selectCell(cell, index) {
-      if (selectedCell) selectedCell.classList.remove('selected');
-      cell.classList.add('selected');
-      selectedCell = cell;
-    }
-
-    function solveSudoku() {
-      const solver = JSON.parse(JSON.stringify(sudokuPuzzle));
-      if (solve(solver)) {
-        const grid = document.getElementById('sudokuGrid');
-        const cells = grid.querySelectorAll('.sudoku-cell');
-        for (let i = 0; i < 81; i++) {
-          const row = Math.floor(i / 9);
-          const col = i % 9;
-          if (sudokuPuzzle[row][col] === 0) {
-            cells[i].value = solver[row][col];
-            sudokuBoard[row][col] = solver[row][col];
-          }
-        }
-        document.getElementById('sudokuMessage').textContent = '✅ Sudoku solved!';
-        document.getElementById('sudokuMessage').className = 'message success';
-      }
-    }
-
-    function solve(board) {
-      for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
-          if (board[row][col] === 0) {
-            for (let num = 1; num <= 9; num++) {
-              if (isValid(board, row, col, num)) {
-                board[row][col] = num;
-                if (solve(board)) return true;
-                board[row][col] = 0;
-              }
+    <script>
+        // Create animated starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
             }
-            return false;
-          }
         }
-      }
-      return true;
-    }
 
-    function isValid(board, row, col, num) {
-      for (let i = 0; i < 9; i++) {
-        if (board[row][i] === num || board[i][col] === num) return false;
-      }
-      const startRow = Math.floor(row / 3) * 3;
-      const startCol = Math.floor(col / 3) * 3;
-      for (let i = startRow; i < startRow + 3; i++) {
-        for (let j = startCol; j < startCol + 3; j++) {
-          if (board[i][j] === num) return false;
-        }
-      }
-      return true;
-    }
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
 
-    function resetSudoku() {
-      sudokuBoard = JSON.parse(JSON.stringify(sudokuPuzzle));
-      document.getElementById('sudokuMessage').textContent = '';
-      initSudoku();
-    }
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
 
-    // Initialize Sudoku on page load
-    initSudoku();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
 
-    // Block Blast Game
-    let blastBoard = Array(25).fill(0);
-    let blastScore = 0;
-    let blastHighScore = localStorage.getItem('blastHighScore') || 0;
-    let blastMoves = 0;
-    let blastCombo = 0;
-    let nextBlocks = [];
-    let difficulty = 'easy';
-    const blockShapes = [
-      [1], [2], [3], [4], [5],
-      [1, 1], [2, 2], [3, 3], [4, 4],
-      [1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4],
-      [1, 1, 1, 1], [2, 2, 2, 2],
-      [1, 1, 1, 1, 1]
-    ];
+        document.querySelectorAll('.feature-card, .gallery-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
 
-    function setDifficulty(diff) {
-      difficulty = diff;
-      document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      resetBlastGame();
-    }
-
-    function generateNextBlocks() {
-      nextBlocks = [];
-      const blockCount = difficulty === 'easy' ? 3 : difficulty === 'medium' ? 3 : 2;
-      for (let i = 0; i < blockCount; i++) {
-        nextBlocks.push(blockShapes[Math.floor(Math.random() * blockShapes.length)]);
-      }
-      updateBlastPreview();
-    }
-
-    function initBlastGame() {
-      blastBoard = Array(25).fill(0);
-      blastScore = 0;
-      blastMoves = 0;
-      blastCombo = 0;
-      
-      // Add obstacles based on difficulty
-      if (difficulty === 'hard') {
-        for (let i = 0; i < 3; i++) {
-          blastBoard[Math.floor(Math.random() * 25)] = -1; // -1 = obstacle
-        }
-      }
-      
-      generateNextBlocks();
-      renderBlastBoard();
-      document.getElementById('blastGameOver').style.display = 'none';
-      document.getElementById('blastHighScore').textContent = blastHighScore;
-    }
-
-    function renderBlastBoard() {
-      const board = document.getElementById('blastBoard');
-      board.innerHTML = '';
-      for (let i = 0; i < 25; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'blast-cell';
-        if (blastBoard[i] === -1) {
-          cell.className += ' obstacle';
-          cell.textContent = '🔒';
-        } else if (blastBoard[i] > 0) {
-          cell.className += ` filled-${blastBoard[i]}`;
-          if (blastBoard[i] > 5) {
-            cell.className += ' blast-power-up';
-            cell.textContent = '⚡';
-          } else {
-            cell.textContent = blastBoard[i];
-          }
-        }
-        cell.addEventListener('click', () => placeBlock(i));
-        board.appendChild(cell);
-      }
-      document.getElementById('blastScore').textContent = blastScore;
-      document.getElementById('blastMoves').textContent = blastMoves;
-      document.getElementById('blastCombo').textContent = blastCombo;
-    }
-
-    function updateBlastPreview() {
-      const preview = document.getElementById('blastPreview');
-      preview.innerHTML = '';
-      nextBlocks.forEach((block, idx) => {
-        const cell = document.createElement('div');
-        cell.className = `blast-preview-cell filled-${block[0]}`;
-        cell.textContent = block[0];
-        cell.title = `Block ${idx + 1}`;
-        cell.style.cursor = selectedBlockIndex === idx ? 'grab' : 'pointer';
-        cell.addEventListener('click', () => selectBlockToDrop(idx));
-        preview.appendChild(cell);
-      });
-    }
-
-    let selectedBlockIndex = 0;
-    function selectBlockToDrop(idx) {
-      selectedBlockIndex = idx;
-      updateBlastPreview();
-    }
-
-    function placeBlock(index) {
-      if (selectedBlockIndex >= nextBlocks.length) return;
-      const block = nextBlocks[selectedBlockIndex];
-      const row = Math.floor(index / 5);
-      const col = index % 5;
-
-      let canPlace = true;
-      for (let i = 0; i < block.length; i++) {
-        const pos = row * 5 + col + i;
-        if (col + i >= 5 || pos >= 25 || (blastBoard[pos] > 0 && blastBoard[pos] !== -1)) {
-          canPlace = false;
-          break;
-        }
-      }
-
-      if (canPlace) {
-        for (let i = 0; i < block.length; i++) {
-          const pos = row * 5 + col + i;
-          if (blastBoard[pos] !== -1) {
-            blastBoard[pos] = block[i];
-          }
-        }
-        blastMoves++;
-        nextBlocks.splice(selectedBlockIndex, 1);
-        selectedBlockIndex = 0;
-        generateNextBlocks();
-        const clears = checkLines();
-        if (clears === 0) blastCombo = 0;
-        renderBlastBoard();
-      }
-    }
-
-    function checkLines() {
-      let cleared = 0;
-      let comboClear = false;
-      
-      for (let row = 0; row < 5; row++) {
-        let fullRow = true;
-        for (let col = 0; col < 5; col++) {
-          if (blastBoard[row * 5 + col] <= 0) {
-            fullRow = false;
-            break;
-          }
-        }
-        if (fullRow) {
-          for (let col = 0; col < 5; col++) {
-            blastBoard[row * 5 + col] = 0;
-          }
-          cleared++;
-          comboClear = true;
-        }
-      }
-      
-      for (let col = 0; col < 5; col++) {
-        let fullCol = true;
-        for (let row = 0; row < 5; row++) {
-          if (blastBoard[row * 5 + col] <= 0) {
-            fullCol = false;
-            break;
-          }
-        }
-        if (fullCol) {
-          for (let row = 0; row < 5; row++) {
-            blastBoard[row * 5 + col] = 0;
-          }
-          cleared++;
-          comboClear = true;
-        }
-      }
-      
-      if (comboClear) {
-        blastCombo++;
-        const multiplier = blastCombo * 10;
-        const points = cleared * 50 * blastCombo;
-        blastScore += points;
-        
-        const comboMsg = document.getElementById('blastComboMsg');
-        comboMsg.textContent = `🔥 ${blastCombo}x Combo! +${points} pts`;
-        setTimeout(() => comboMsg.textContent = '', 1500);
-        
-        if (cleared > 2) {
-          blastScore += 100 * (cleared - 2);
-        }
-        
-        setTimeout(() => {
-          if (checkLines() > 0) {
-            renderBlastBoard();
-          }
-        }, 200);
-      }
-      
-      if (blastScore > blastHighScore) {
-        blastHighScore = blastScore;
-        localStorage.setItem('blastHighScore', blastHighScore);
-        document.getElementById('blastHighScore').textContent = blastHighScore;
-      }
-      
-      return cleared;
-    }
-
-    function resetBlastGame() {
-      initBlastGame();
-    }
-
-    document.getElementById('blastHighScore').textContent = blastHighScore;
-    initBlastGame();
-  </script>
+        // Initialize
+        createStarfield();
+    </script>
 </body>
 </html>
