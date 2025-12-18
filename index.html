@@ -14,12 +14,13 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
             transition: background 0.3s ease;
+            overflow: hidden;
         }
 
         body.dark-mode {
@@ -67,34 +68,41 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-            max-width: 500px;
+            padding: 20px;
+            max-width: 600px;
             width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         h1 {
             color: #333;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2em;
+            margin-bottom: 5px;
             letter-spacing: 2px;
         }
 
         .instructions {
             color: #666;
-            font-size: 0.9em;
-            margin-bottom: 20px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
         }
 
         .game-board {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 15px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .tile {
@@ -102,7 +110,7 @@
             aspect-ratio: 1;
             border: 2px solid #d3d6da;
             border-radius: 4px;
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -168,24 +176,33 @@
             animation: bounce 0.3s;
         }
 
+        /* Keyboard layout improvements */
         .keyboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
             gap: 6px;
-            margin-bottom: 20px;
         }
 
         .key {
-            padding: 8px 6px;
+            padding: 18px 12px;
             background: #d3d6da;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8em;
+            font-size: 1.1em;
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.1s ease;
             color: #333;
+            min-width: 45px;
+            touch-action: manipulation;
         }
 
         .key:hover {
@@ -219,8 +236,8 @@
 
         .controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         button.action {
@@ -230,10 +247,11 @@
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 1em;
+            font-size: 0.95em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
         button.action:hover {
@@ -248,10 +266,10 @@
 
         .message {
             text-align: center;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
-            min-height: 30px;
-            padding: 10px;
+            min-height: 25px;
+            padding: 8px;
             border-radius: 4px;
             margin-bottom: 10px;
         }
@@ -273,10 +291,10 @@
 
         .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 20px;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 2px solid #e0e0e0;
         }
 
@@ -286,13 +304,13 @@
 
         .stat-label {
             color: #999;
-            font-size: 0.8em;
-            margin-bottom: 5px;
+            font-size: 0.75em;
+            margin-bottom: 3px;
         }
 
         .stat-value {
             color: #333;
-            font-size: 1.5em;
+            font-size: 1.3em;
             font-weight: bold;
         }
 
@@ -317,10 +335,10 @@
 
         .timer {
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1em;
             color: #667eea;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         body.dark-mode .timer {
@@ -328,11 +346,12 @@
         }
 
         .definition {
-            margin-top: 15px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 12px;
             background: #f0f0f0;
             border-radius: 8px;
             border-left: 4px solid #667eea;
+            font-size: 0.9em;
         }
 
         body.dark-mode .definition {
@@ -436,69 +455,129 @@
             min-width: 20px;
         }
 
+        /* Hidden input for mobile keyboard */
+        #hiddenInput {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 5px;
             }
 
             .container {
-                padding: 20px;
+                padding: 15px 10px;
                 max-width: 100%;
+                max-height: 98vh;
             }
 
             h1 {
-                font-size: 2em;
+                font-size: 1.8em;
+                margin-bottom: 3px;
+            }
+
+            .instructions {
+                font-size: 0.8em;
+                margin-bottom: 8px;
             }
 
             .tile {
-                font-size: 1.5em;
+                font-size: 1.4em;
             }
 
             .game-board {
-                gap: 5px;
+                gap: 4px;
+                margin-bottom: 12px;
             }
 
             .keyboard {
+                gap: 6px;
+                margin-bottom: 12px;
+                display: none;
+            }
+
+            .keyboard.show-mobile {
+                display: flex;
+            }
+
+            .keyboard-row {
                 gap: 4px;
             }
 
             .key {
-                padding: 12px 4px;
-                font-size: 0.7em;
-                min-width: 25px;
+                padding: 14px 8px;
+                font-size: 0.95em;
+                min-width: 35px;
             }
 
             .controls {
-                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 12px;
             }
 
             button.action {
-                width: 100%;
+                padding: 10px;
+                font-size: 0.85em;
             }
 
             .stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                margin-top: 12px;
+                padding-top: 12px;
             }
 
-            .theme-toggle {
-                width: 35px;
-                height: 35px;
-                font-size: 1em;
+            .stat-value {
+                font-size: 1.1em;
+            }
+
+            .stat-label {
+                font-size: 0.7em;
             }
 
             .timer {
-                font-size: 1em;
+                font-size: 0.9em;
+                margin-bottom: 6px;
+            }
+
+            .message {
+                font-size: 0.9em;
+                padding: 6px;
+                min-height: 20px;
+            }
+
+            .definition {
+                padding: 10px;
+                font-size: 0.85em;
+                margin-top: 8px;
+            }
+
+            .theme-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9em;
+                top: 5px;
+                right: 5px;
             }
 
             .stats-content {
                 padding: 20px;
                 width: 95%;
             }
+
+            .share-btn {
+                margin-top: 8px;
+            }
         }
 
         @media (max-width: 480px) {
+            .container {
+                padding: 12px 8px;
+            }
+
             h1 {
                 font-size: 1.5em;
                 letter-spacing: 1px;
@@ -509,61 +588,45 @@
             }
 
             .game-board {
-                gap: 4px;
+                gap: 3px;
             }
 
-            .keyboard {
+            .keyboard-row {
                 gap: 3px;
             }
 
             .key {
-                padding: 10px 2px;
-                font-size: 0.65em;
-                min-width: 22px;
+                padding: 12px 6px;
+                font-size: 0.85em;
+                min-width: 28px;
             }
 
             button.action {
-                padding: 10px;
-                font-size: 0.9em;
+                padding: 9px;
+                font-size: 0.8em;
             }
 
             .stat-value {
-                font-size: 1.2em;
+                font-size: 1em;
             }
 
-            .stat-label {
-                font-size: 0.7em;
-            }
-
-            .definition {
-                padding: 12px;
-                font-size: 0.9em;
+            .definition h3 {
+                font-size: 1em;
             }
         }
 
         /* Keyboard layout improvements */
-        .keyboard {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        @media (max-width: 480px) {
-            .keyboard-row {
-                gap: 3px;
+        @media (min-width: 769px) {
+            .keyboard {
+                display: flex !important;
             }
         }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+    
+    <input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     
     <div class="container">
         <div class="header">
@@ -961,8 +1024,47 @@
         const keyboard = document.getElementById('keyboard');
         const message = document.getElementById('message');
         const timerDisplay = document.getElementById('timer');
+        const hiddenInput = document.getElementById('hiddenInput');
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         updateStatsDisplay();
+
+        // Mobile keyboard handling
+        if (isMobile) {
+            // Focus on game board to trigger mobile keyboard
+            document.addEventListener('click', (e) => {
+                if (!gameOver && e.target.closest('.container')) {
+                    hiddenInput.focus();
+                }
+            });
+
+            hiddenInput.addEventListener('input', (e) => {
+                const value = e.target.value.toUpperCase();
+                if (value) {
+                    const lastChar = value[value.length - 1];
+                    if (/^[A-Z]$/.test(lastChar)) {
+                        addLetter(lastChar);
+                    }
+                    hiddenInput.value = '';
+                }
+            });
+
+            hiddenInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    deleteLetter();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitGuess();
+                }
+            });
+
+            // Auto-focus when game starts
+            setTimeout(() => hiddenInput.focus(), 500);
+        } else {
+            // Desktop - show keyboard
+            keyboard.classList.add('show-mobile');
+        }
 
         async function initializeGame() {
             // Load words from API on first run
@@ -993,6 +1095,11 @@
 
             initializeKeyboard();
             document.addEventListener('keydown', handleKeyPress);
+            
+            // Re-focus on mobile
+            if (isMobile) {
+                setTimeout(() => hiddenInput.focus(), 300);
+            }
         }
 
         function initializeKeyboard() {
@@ -1188,6 +1295,9 @@
         function disableGame() {
             const keys = document.querySelectorAll('.key');
             keys.forEach(key => key.disabled = true);
+            if (isMobile) {
+                hiddenInput.blur();
+            }
         }
 
         function showMessage(text, type) {
