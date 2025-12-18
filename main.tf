@@ -19,7 +19,7 @@ terraform {
 provider "render" {
 }
 
-resource "render_static_site_test" "example" {
+resource "render_static_site" "example1" {
   name          = "render-terraform-example-try"
   repo_url      = "https://github.com/mehdijoudi01/terraform-training"
   branch        = "main"
@@ -30,5 +30,5 @@ resource "render_static_site_test" "example" {
 }
 
 output "site_url" {
-  value = render_static_site_test.example.url
+  value = render_static_site.example1.url
 }
