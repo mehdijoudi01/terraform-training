@@ -32,13 +32,13 @@ jobs:
           set -euo pipefail
           ORG="terraform-training-mehdi"
           WORKSPACE="terraform-training"
-
+          
           ws_json=$(curl -sS \
             --header "Authorization: Bearer $TF_API_TOKEN" \
             --header "Content-Type: application/vnd.api+json" \
             https://app.terraform.io/api/v2/organizations/$ORG/workspaces/$WORKSPACE)
           ws_id=$(echo "$ws_json" | jq -r '.data.id')
-
+          
           upsert_var() {
             local key="$1" value="$2" sensitive="$3"
             vars_json=$(curl -sS \
@@ -46,26 +46,28 @@ jobs:
               --header "Content-Type: application/vnd.api+json" \
               https://app.terraform.io/api/v2/workspaces/$ws_id/vars)
             var_id=$(echo "$vars_json" | jq -r --arg k "$key" '.data[] | select(.attributes.key==$k) | .id' | head -n1)
-
-            payload=$(cat <<EOF
-            {
-              "data": {
-                "type": "vars",
-                "attributes": {
-                  "key": "$key",
-                  "value": "$value",
-                  "category": "env",
-                  "hcl": false,
-                  "sensitive": $sensitive
-                },
-                "relationships": {
-                  "workspace": { "data": { "id": "$ws_id", "type": "workspaces" } }
+            
+            payload=$(jq -n \
+              --arg k "$key" \
+              --arg v "$value" \
+              --arg s "$sensitive" \
+              --arg wid "$ws_id" \
+              '{
+                data: {
+                  type: "vars",
+                  attributes: {
+                    key: $k,
+                    value: $v,
+                    category: "env",
+                    hcl: false,
+                    sensitive: ($s == "true")
+                  },
+                  relationships: {
+                    workspace: { data: { id: $wid, type: "workspaces" } }
+                  }
                 }
-              }
-            }
-            EOF
-            )
-
+              }')
+            
             if [ -n "$var_id" ]; then
               curl -sS -X PATCH \
                 --header "Authorization: Bearer $TF_API_TOKEN" \
@@ -80,9 +82,9 @@ jobs:
                 https://app.terraform.io/api/v2/vars >/dev/null
             fi
           }
-
-          upsert_var "RENDER_API_KEY" "$RENDER_API_KEY" true
-          upsert_var "RENDER_OWNER_ID" "$RENDER_OWNER_ID" true
+          
+          upsert_var "RENDER_API_KEY" "$RENDER_API_KEY" "true"
+          upsert_var "RENDER_OWNER_ID" "$RENDER_OWNER_ID" "true"
 
       - name: Terraform Init
         env:
