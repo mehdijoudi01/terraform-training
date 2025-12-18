@@ -98,9 +98,9 @@
         .game-board {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 15px;
-            max-width: 400px;
+            width: min(480px, 100%);
             margin-left: auto;
             margin-right: auto;
         }
@@ -110,7 +110,7 @@
             aspect-ratio: 1;
             border: 2px solid #d3d6da;
             border-radius: 4px;
-            font-size: 1.8em;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -485,11 +485,11 @@
             }
 
             .tile {
-                font-size: 1.4em;
+                font-size: 1.6em;
             }
 
             .game-board {
-                gap: 4px;
+                gap: 5px;
                 margin-bottom: 12px;
             }
 
@@ -534,13 +534,13 @@
                 font-size: 0.7em;
             }
 
-            .timer {
-                font-size: 0.9em;
-                margin-bottom: 6px;
+            .tile {
+                font-size: 1.4em;
             }
 
-            .message {
-                font-size: 0.9em;
+            .game-board {
+                gap: 4px;
+            }
                 padding: 6px;
                 min-height: 20px;
             }
