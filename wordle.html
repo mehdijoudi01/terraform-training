@@ -701,21 +701,21 @@
             }
         }
 
-        // Load words from API
+        // Load words from local file
         async function loadWords() {
             try {
                 showMessage('Loading words...', 'info');
-                // Use comprehensive Wordle word list
-                const response = await fetch('https://raw.githubusercontent.com/tabatkins/wordle-list/main/words');
-                if (!response.ok) throw new Error('API request failed');
+                // Use local word list
+                const response = await fetch('words.txt');
+                if (!response.ok) throw new Error('Failed to load word list');
                 const text = await response.text();
                 const allWords = text.split('\n').filter(w => w.trim().length === 5).map(w => w.trim().toUpperCase());
                 showMessage(`Loaded ${allWords.length} words!`, 'success');
                 return allWords.length > 0 ? allWords : FALLBACK_WORDS;
             } catch (error) {
-                console.error('Failed to load words from API:', error);
+                console.error('Failed to load words:', error);
                 showMessage('Using fallback word list', 'info');
-                // Fallback to hardcoded words if API fails
+                // Fallback to hardcoded words if file fails to load
                 return FALLBACK_WORDS;
             }
         }
