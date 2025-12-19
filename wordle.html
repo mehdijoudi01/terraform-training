@@ -646,8 +646,16 @@
             }
         }
 
+        let lastInputTime = 0;
+        let isKeyboardInput = false;
+        
         function handleMobileInput(event) {
             if (!mobileInput) return;
+            // Prevent double input if keyboard just fired (within 50ms)
+            if (isKeyboardInput && Date.now() - lastInputTime < 50) {
+                mobileInput.value = '';
+                return;
+            }
             const value = mobileInput.value.toUpperCase().replace(/[^A-Z]/g, '');
             for (const char of value) {
                 addLetter(char);
@@ -697,11 +705,11 @@
         async function loadWords() {
             try {
                 showMessage('Loading words...', 'info');
-                // Try GitHub word list API (more reliable)
-                const response = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt');
+                // Use comprehensive Wordle word list
+                const response = await fetch('https://raw.githubusercontent.com/tabatkins/wordle-list/main/words');
                 if (!response.ok) throw new Error('API request failed');
                 const text = await response.text();
-                const allWords = text.split('\n').filter(w => w.length === 5).map(w => w.toUpperCase());
+                const allWords = text.split('\n').filter(w => w.trim().length === 5).map(w => w.trim().toUpperCase());
                 showMessage(`Loaded ${allWords.length} words!`, 'success');
                 return allWords.length > 0 ? allWords : FALLBACK_WORDS;
             } catch (error) {
@@ -972,6 +980,9 @@
         }
 
         function handleKeyPress(event) {
+            isKeyboardInput = true;
+            lastInputTime = Date.now();
+            
             const letter = event.key.toUpperCase();
             if (/^[A-Z]$/.test(letter)) {
                 addLetter(letter);
