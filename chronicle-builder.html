@@ -94,55 +94,42 @@
             color: #7db8ff;
         }
 
-        .timeline-display {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 10px;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
             margin-bottom: 30px;
-            min-height: 120px;
         }
 
-        body.dark-mode .timeline-display {
+        .stat-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        body.dark-mode .stat-box {
             background: #1a1a2e;
         }
 
-        .era-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .era-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        body.dark-mode .era-item {
-            background: #16213e;
-            color: #e0e0e0;
-        }
-
-        .era-label {
-            color: #999;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-
-        body.dark-mode .era-label {
-            color: #7db8ff;
-        }
-
-        .era-value {
-            color: #333;
-            font-size: 1.1em;
+        .stat-value {
+            color: #667eea;
+            font-size: 1.5em;
             font-weight: bold;
         }
 
-        body.dark-mode .era-value {
-            color: #fff;
+        body.dark-mode .stat-value {
+            color: #9fb3ff;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        body.dark-mode .stat-label {
+            color: #7db8ff;
         }
 
         .event-display {
@@ -220,6 +207,34 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        .history-timeline {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        body.dark-mode .history-timeline {
+            background: #1a1a2e;
+        }
+
+        .timeline-event {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        body.dark-mode .timeline-event {
+            background: #16213e;
+            color: #b0b0b0;
+        }
+
         .action-buttons {
             display: flex;
             gap: 15px;
@@ -251,70 +266,102 @@
             background: #5a6268;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+        .intro-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        .stat-box {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        body.dark-mode .stat-box {
-            background: #1a1a2e;
-        }
-
-        .stat-value {
-            color: #667eea;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        body.dark-mode .stat-value {
-            color: #9fb3ff;
-        }
-
-        .stat-label {
-            color: #999;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        body.dark-mode .stat-label {
-            color: #7db8ff;
-        }
-
-        .history-timeline {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            max-height: 200px;
+        .intro-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
             overflow-y: auto;
         }
 
-        body.dark-mode .history-timeline {
-            background: #1a1a2e;
+        body.dark-mode .intro-content {
+            background: #0f3460;
+            color: #e0e0e0;
         }
 
-        .timeline-event {
-            padding: 10px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            border-left: 3px solid #667eea;
+        .intro-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        body.dark-mode .intro-content h2 {
+            color: #9fb3ff;
+        }
+
+        .intro-content p {
             color: #555;
-            font-size: 0.95em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.05em;
         }
 
-        body.dark-mode .timeline-event {
-            background: #16213e;
+        body.dark-mode .intro-content p {
             color: #b0b0b0;
+        }
+
+        .intro-content .highlight {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        body.dark-mode .intro-content .highlight {
+            background: #1a2a3a;
+            border-color: #9fb3ff;
+        }
+
+        .intro-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .intro-content li {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        body.dark-mode .intro-content li {
+            color: #b0b0b0;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            background: #764ba2;
+        }
+
+        body.dark-mode #choicePrompt {
+            color: #e0e0e0;
         }
 
         @media (max-width: 768px) {
@@ -324,10 +371,6 @@
 
             .title {
                 font-size: 1.8em;
-            }
-
-            .era-info {
-                grid-template-columns: 1fr;
             }
 
             .choices-grid {
@@ -341,10 +384,52 @@
             .action-buttons {
                 flex-direction: column;
             }
+
+            .intro-content {
+                padding: 25px;
+            }
+
+            .intro-content h2 {
+                font-size: 1.5em;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="intro-modal" id="introModal">
+        <div class="intro-content">
+            <h2>📖 Welcome to Chronicle Builder</h2>
+            <p><strong>Lead a Civilization Through History</strong></p>
+            <p>Guide your civilization through 10 critical historical moments. Every choice matters—shape the future or watch it crumble!</p>
+            
+            <div class="highlight">
+                <strong>🎯 Your Mission:</strong>
+                <ul>
+                    <li>Survive 10 turns making critical decisions</li>
+                    <li>Manage 4 key attributes (Stability, Innovation, Culture, Economy)</li>
+                    <li>Adapt to evolving events based on your choices</li>
+                    <li>Achieve victory through balance or dominance</li>
+                </ul>
+            </div>
+
+            <p><strong>⚖️ The Four Pillars:</strong></p>
+            <ul>
+                <li><strong>Stability (0-100):</strong> Order, security, and cohesion. Too low = collapse!</li>
+                <li><strong>Innovation (0-100):</strong> Progress and technological advancement</li>
+                <li><strong>Culture (0-100):</strong> Arts, philosophy, and social values</li>
+                <li><strong>Economy (0-100):</strong> Prosperity and resource management</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>⚠️ Warning:</strong> If ANY attribute drops to 0, your civilization collapses immediately! Balance is survival, but specialization creates unique futures.
+            </div>
+
+            <p style="text-align: center; margin-top: 25px; font-size: 1.1em;"><strong>Will you forge a golden age or descend into chaos?</strong></p>
+            
+            <button class="start-btn" onclick="startGame()">🚀 Begin Your Chronicle</button>
+        </div>
+    </div>
+
     <div class="header-bar">
         <button class="back-btn" onclick="goBack()" title="Back to Hub">←</button>
         <h1 style="color: white; flex: 1; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">📖 Chronicle Builder</h1>
@@ -353,73 +438,89 @@
 
     <div class="container">
         <div class="game-content">
-            <!-- API Status -->
-            <div class="api-status" id="apiStatus">🔄 Loading from APIs...</div>
+            <div class="api-status" id="apiStatus">🔄 Loading historical data...</div>
 
-            <!-- Statistics -->
             <div class="stats">
                 <div class="stat-box">
-                    <div class="stat-value" id="yearDisplay">2024</div>
-                    <div class="stat-label">Year</div>
+                    <div class="stat-value" id="stabilityDisplay">50</div>
+                    <div class="stat-label">⚖️ Stability</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="eraDisplay">Modern</div>
-                    <div class="stat-label">Era</div>
+                    <div class="stat-value" id="innovationDisplay">50</div>
+                    <div class="stat-label">⚡ Innovation</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="choicesDisplay">0</div>
-                    <div class="stat-label">Choices Made</div>
+                    <div class="stat-value" id="cultureDisplay">50</div>
+                    <div class="stat-label">🎭 Culture</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="impactDisplay">0%</div>
-                    <div class="stat-label">History Changed</div>
+                    <div class="stat-value" id="economyDisplay">50</div>
+                    <div class="stat-label">💰 Economy</div>
+                </div>
+            </div>
+            
+            <div style="background: #e0e0e0; border-radius: 10px; height: 30px; margin-bottom: 20px; overflow: hidden;">
+                <div id="progressBar" style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    Turn 0/10
                 </div>
             </div>
 
-            <!-- Timeline Era Information -->
-            <div class="timeline-display">
-                <div class="era-info">
-                    <div class="era-item">
-                        <div class="era-label">⏰ Historical Period</div>
-                        <div class="era-value" id="periodDisplay">Loading...</div>
-                    </div>
-                    <div class="era-item">
-                        <div class="era-label">🌍 Location</div>
-                        <div class="era-value" id="locationDisplay">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event Display -->
             <div class="event-display">
-                <div class="event-title">📜 Historical Event</div>
-                <div class="event-description" id="eventDescription">Loading event...</div>
+                <div class="event-title" id="eventTitle">📜 Your Chronicle Begins...</div>
+                <div class="event-description" id="eventDescription">Press "Begin Your Chronicle" to start your journey through history.</div>
                 <div class="consequences" id="consequences" style="display: none;"></div>
             </div>
 
-            <!-- Choices -->
             <div style="margin-bottom: 20px;">
-                <h3 style="color: #333; margin-bottom: 15px;">Your Decision:</h3>
-                <div class="choices-grid" id="choicesContainer">
-                    <div style="text-align: center; color: #999;">Loading choices...</div>
-                </div>
+                <h3 style="color: #333; margin-bottom: 15px;" id="choicePrompt">🤔 What will you do?</h3>
+                <div class="choices-grid" id="choicesContainer"></div>
             </div>
 
-            <!-- History Timeline -->
             <div class="history-timeline" id="historyTimeline">
-                <div style="text-align: center; color: #999;">Your decisions will appear here...</div>
+                <div style="text-align: center; color: #999;">Your chronicle will unfold here...</div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="btn secondary" onclick="resetGame()">Reset Game</button>
-                <button class="btn" onclick="shareStory()">Share Story</button>
+                <button class="btn secondary" onclick="resetGame()">🔄 Reset Chronicle</button>
+                <button class="btn" onclick="shareStory()">📤 Share Story</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Theme toggle
+        let gameState = {
+            turn: 0,
+            maxTurns: 10,
+            stability: 50,
+            innovation: 50,
+            culture: 50,
+            economy: 50,
+            decisions: [],
+            currentEra: null,
+            gameOver: false
+        };
+
+        const eras = [
+            { name: 'Ancient Mesopotamia', year: -3000, period: '3500-539 BCE', wikiTopic: 'Mesopotamia' },
+            { name: 'Ancient Egypt', year: -1500, period: '3000-30 BCE', wikiTopic: 'Ancient_Egypt' },
+            { name: 'Classical Greece', year: -400, period: '800-146 BCE', wikiTopic: 'Ancient_Greece' },
+            { name: 'Roman Empire', year: 100, period: '27 BCE-476 CE', wikiTopic: 'Roman_Empire' },
+            { name: 'Medieval Europe', year: 1000, period: '500-1500 CE', wikiTopic: 'Middle_Ages' },
+            { name: 'Renaissance', year: 1500, period: '14th-17th century', wikiTopic: 'Renaissance' },
+            { name: 'Age of Enlightenment', year: 1700, period: '17th-18th century', wikiTopic: 'Age_of_Enlightenment' },
+            { name: 'Industrial Revolution', year: 1800, period: '1760-1840', wikiTopic: 'Industrial_Revolution' },
+            { name: 'Victorian Era', year: 1850, period: '1837-1901', wikiTopic: 'Victorian_era' },
+            { name: 'World War Era', year: 1940, period: '1914-1945', wikiTopic: 'World_War_I' },
+            { name: 'Cold War', year: 1960, period: '1947-1991', wikiTopic: 'Cold_War' },
+            { name: 'Digital Age', year: 2000, period: '1970-2010', wikiTopic: 'Information_Age' },
+            { name: 'Modern Era', year: 2020, period: '2010-Present', wikiTopic: '21st_century' }
+        ];
+
+        function startGame() {
+            document.getElementById('introModal').style.display = 'none';
+            displayEvent();
+        }
+
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -436,219 +537,432 @@
             window.location.href = 'index.html';
         }
 
-        // Game State
-        let gameState = {
-            currentYear: 2024,
-            era: 'Modern',
-            choicesMade: 0,
-            historyChanged: 0,
-            decisions: [],
-            currentEvent: null
-        };
-
-        // Historical Periods with API topics
-        const eras = [
-            { name: 'Ancient Egypt', year: 1500, period: '3000 BCE - 30 BCE', wikiTopic: 'Ancient Egypt' },
-            { name: 'Classical Greece', year: 1, period: '800 BCE - 146 BCE', wikiTopic: 'Ancient Greece' },
-            { name: 'Roman Empire', year: 100, period: '27 BCE - 476 CE', wikiTopic: 'Roman Empire' },
-            { name: 'Medieval Times', year: 1000, period: '500 CE - 1500 CE', wikiTopic: 'Middle Ages' },
-            { name: 'Renaissance', year: 1400, period: '1300 - 1600', wikiTopic: 'Renaissance' },
-            { name: 'Age of Exploration', year: 1500, period: '1400 - 1700', wikiTopic: 'Age of Exploration' },
-            { name: 'Industrial Revolution', year: 1750, period: '1760 - 1840', wikiTopic: 'Industrial Revolution' },
-            { name: 'Victorian Era', year: 1850, period: '1837 - 1901', wikiTopic: 'Victorian era' },
-            { name: 'Roaring Twenties', year: 1920, period: '1920 - 1929', wikiTopic: 'Roaring Twenties' },
-            { name: 'World War II', year: 1940, period: '1939 - 1945', wikiTopic: 'World War II' },
-            { name: 'Cold War', year: 1960, period: '1945 - 1991', wikiTopic: 'Cold War' },
-            { name: 'Digital Age', year: 2000, period: '2000 - Present', wikiTopic: 'Digital Revolution' },
-            { name: 'Modern Era', year: 2024, period: '2020 - Present', wikiTopic: 'Information Age' }
-        ];
-
-        // API Functions
         async function fetchWikipediaSummary(topic) {
             try {
-                const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`);
-                if (!response.ok) throw new Error('Wikipedia fetch failed');
+                const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${topic}`);
+                if (!response.ok) return null;
                 const data = await response.json();
-                return data.extract || null;
+                return data.extract;
             } catch (error) {
-                console.log('Wikipedia API unavailable');
+                console.error('Wikipedia API error:', error);
                 return null;
             }
         }
 
         async function fetchHistoricalQuote() {
             try {
-                // Try ZenQuotes API first
                 const response = await fetch('https://zenquotes.io/api/random');
                 if (!response.ok) throw new Error('ZenQuotes failed');
                 const data = await response.json();
-                if (data && data[0]) {
-                    return `"${data[0].q}" - ${data[0].a}`;
-                }
+                return `"${data[0].q}" - ${data[0].a}`;
             } catch (error) {
-                console.log('ZenQuotes unavailable, trying Advice Slip...');
-            }
-            
-            try {
-                // Fallback to Advice Slip API
-                const response = await fetch('https://api.adviceslip.com/advice');
-                if (!response.ok) throw new Error('Advice Slip failed');
-                const data = await response.json();
-                if (data && data.slip) {
-                    return `"${data.slip.advice}" - Wisdom`;
-                }
-            } catch (error) {
-                console.log('Advice Slip unavailable, trying Game of Thrones...');
-            }
-
-            try {
-                // Fallback to Game of Thrones Quotes API
-                const response = await fetch('https://api.gameofthronesquotes.xyz/v1/random');
-                if (!response.ok) throw new Error('GOT Quotes failed');
-                const data = await response.json();
-                if (data && data.sentence) {
+                try {
+                    const response = await fetch('https://api.gameofthronesquotes.xyz/v1/random');
+                    const data = await response.json();
                     return `"${data.sentence}" - ${data.character.name}`;
+                } catch (e) {
+                    return null;
                 }
-            } catch (error) {
-                console.log('All quote APIs unavailable');
-                return null;
             }
         }
 
-        async function fetchHistoricalEvent() {
-            try {
-                const response = await fetch('https://history.muffinlabs.com/date');
-                if (!response.ok) throw new Error('History API failed');
-                const data = await response.json();
-                if (data.data && data.data.Events && data.data.Events.length > 0) {
-                    const randomEvent = data.data.Events[Math.floor(Math.random() * Math.min(5, data.data.Events.length))];
-                    return `In ${randomEvent.year}: ${randomEvent.text}`;
-                }
-                return null;
-            } catch (error) {
-                console.log('History API unavailable');
-                return null;
+        function getEventTemplates(era) {
+            const { stability, innovation, culture, economy } = gameState;
+            const templates = [];
+
+            // Crisis events if any stat is low
+            if (stability < 30) {
+                templates.push({
+                    title: `⚠️ ${era.name}: Social Unrest`,
+                    situation: 'Your civilization teeters on the brink of chaos. Riots and disorder spread. How will you restore order?',
+                    choices: [
+                        { text: '⚔️ Enforce martial law', effects: { stability: 25, innovation: -10, culture: -15, economy: -10 } },
+                        { text: '🤝 Negotiate with leaders', effects: { stability: 15, innovation: 0, culture: 10, economy: -5 } },
+                        { text: '📜 Reform institutions', effects: { stability: 10, innovation: 10, culture: 5, economy: -15 } }
+                    ]
+                });
             }
+
+            if (economy < 30) {
+                templates.push({
+                    title: `💰 ${era.name}: Economic Crisis`,
+                    situation: 'Your economy is in freefall. Trade has collapsed, unemployment soars, and famine looms.',
+                    choices: [
+                        { text: '💵 Print more currency', effects: { stability: -10, innovation: 0, culture: -5, economy: 20 } },
+                        { text: '🏦 Seek foreign loans', effects: { stability: 5, innovation: -5, culture: 0, economy: 25 } },
+                        { text: '🌾 Focus on agriculture', effects: { stability: 10, innovation: -10, culture: -5, economy: 15 } }
+                    ]
+                });
+            }
+
+            if (innovation < 30) {
+                templates.push({
+                    title: `🔬 ${era.name}: Stagnation Crisis`,
+                    situation: 'Your civilization has fallen behind. Other nations surpass you in every field. Innovation is needed now!',
+                    choices: [
+                        { text: '🎓 Build universities', effects: { stability: -5, innovation: 25, culture: 15, economy: -15 } },
+                        { text: '🕵️ Steal foreign tech', effects: { stability: -15, innovation: 20, culture: -10, economy: 5 } },
+                        { text: '💡 Incentivize inventors', effects: { stability: 0, innovation: 15, culture: 5, economy: -10 } }
+                    ]
+                });
+            }
+
+            if (culture < 30) {
+                templates.push({
+                    title: `🎭 ${era.name}: Cultural Decay`,
+                    situation: 'Your people have lost their identity. Traditions fade, morale plummets, and purpose disappears.',
+                    choices: [
+                        { text: '🏛️ Build monuments', effects: { stability: 10, innovation: -10, culture: 25, economy: -15 } },
+                        { text: '🎨 Support artists', effects: { stability: -5, innovation: 5, culture: 20, economy: -10 } },
+                        { text: '📚 Preserve traditions', effects: { stability: 15, innovation: -15, culture: 20, economy: 0 } }
+                    ]
+                });
+            }
+
+            // Normal balanced events
+            templates.push(
+                {
+                    title: `⚔️ ${era.name}: Military Conflict`,
+                    situation: 'A neighboring power threatens your borders. Prepare for war or seek peace?',
+                    choices: [
+                        { text: '⚔️ Launch preemptive strike', effects: { stability: -20, innovation: 10, culture: -10, economy: -15 } },
+                        { text: '🛡️ Fortify defenses', effects: { stability: 10, innovation: -5, culture: 0, economy: -10 } },
+                        { text: '🤝 Negotiate alliance', effects: { stability: 5, innovation: 5, culture: 10, economy: 10 } }
+                    ]
+                },
+                {
+                    title: `🔬 ${era.name}: Technological Discovery`,
+                    situation: 'Your scientists have made a breakthrough! How will you apply this new knowledge?',
+                    choices: [
+                        { text: '⚙️ Industrialize rapidly', effects: { stability: -10, innovation: 20, culture: -5, economy: 15 } },
+                        { text: '📖 Share with the world', effects: { stability: 5, innovation: 15, culture: 15, economy: -5 } },
+                        { text: '🔒 Keep it secret', effects: { stability: 0, innovation: 10, culture: -10, economy: 20 } }
+                    ]
+                },
+                {
+                    title: `📜 ${era.name}: Social Movement`,
+                    situation: 'A powerful social movement demands radical change. Revolutionary ideas spread like wildfire.',
+                    choices: [
+                        { text: '✊ Embrace the revolution', effects: { stability: -15, innovation: 15, culture: 20, economy: -10 } },
+                        { text: '⚖️ Gradual reforms', effects: { stability: 5, innovation: 10, culture: 10, economy: 0 } },
+                        { text: '🛑 Maintain status quo', effects: { stability: 15, innovation: -15, culture: -20, economy: 10 } }
+                    ]
+                },
+                {
+                    title: `🌾 ${era.name}: Resource Discovery`,
+                    situation: 'Vast natural resources have been discovered! How will you exploit them?',
+                    choices: [
+                        { text: '⚡ Rapid extraction', effects: { stability: -10, innovation: 10, culture: -5, economy: 25 } },
+                        { text: '♻️ Sustainable approach', effects: { stability: 10, innovation: 15, culture: 10, economy: 10 } },
+                        { text: '🏞️ Preserve nature', effects: { stability: 5, innovation: -10, culture: 20, economy: -5 } }
+                    ]
+                },
+                {
+                    title: `🎭 ${era.name}: Cultural Renaissance`,
+                    situation: 'Artists and thinkers are creating unprecedented works. Support them or focus elsewhere?',
+                    choices: [
+                        { text: '🎨 Massive patronage', effects: { stability: 0, innovation: 10, culture: 25, economy: -15 } },
+                        { text: '📚 Build institutions', effects: { stability: 10, innovation: 5, culture: 15, economy: -10 } },
+                        { text: '💰 Focus on economy', effects: { stability: -5, innovation: 0, culture: -15, economy: 20 } }
+                    ]
+                },
+                {
+                    title: `🏛️ ${era.name}: Political Crisis`,
+                    situation: 'The government system is outdated. Reform your institutions or risk collapse?',
+                    choices: [
+                        { text: '🗳️ Democracy now!', effects: { stability: -15, innovation: 15, culture: 15, economy: -5 } },
+                        { text: '👑 Strengthen monarchy', effects: { stability: 15, innovation: -10, culture: 5, economy: 5 } },
+                        { text: '⚖️ Mixed system', effects: { stability: 5, innovation: 5, culture: 5, economy: 5 } }
+                    ]
+                }
+            );
+
+            // Opportunity events if stats are high
+            if (innovation > 70) {
+                templates.push({
+                    title: `🚀 ${era.name}: Golden Age of Innovation`,
+                    situation: 'Your civilization leads the world in technology! Capitalize on this advantage.',
+                    choices: [
+                        { text: '🏭 Industrial supremacy', effects: { stability: -10, innovation: 15, culture: -10, economy: 25 } },
+                        { text: '🌍 Spread knowledge', effects: { stability: 10, innovation: 10, culture: 20, economy: 10 } },
+                        { text: '⚔️ Military technology', effects: { stability: 5, innovation: 10, culture: -15, economy: 10 } }
+                    ]
+                });
+            }
+
+            if (culture > 70) {
+                templates.push({
+                    title: `🎭 ${era.name}: Cultural Golden Age`,
+                    situation: 'Your civilization is the beacon of art and philosophy! How will you use this soft power?',
+                    choices: [
+                        { text: '🌍 Cultural imperialism', effects: { stability: 5, innovation: 0, culture: 15, economy: 15 } },
+                        { text: '📚 Preserve heritage', effects: { stability: 15, innovation: -10, culture: 20, economy: 0 } },
+                        { text: '🎨 Export culture', effects: { stability: 0, innovation: 10, culture: 10, economy: 20 } }
+                    ]
+                });
+            }
+
+            return templates;
         }
 
-        async function generateEvent(era) {
+        async function generateEvent() {
+            const era = eras[gameState.turn % eras.length];
+            gameState.currentEra = era;
+
             try {
-                const [wikiSummary, quote, historicalFact] = await Promise.all([
+                document.getElementById('apiStatus').textContent = '🔄 Consulting historical records...';
+                
+                const templates = getEventTemplates(era);
+                const template = templates[Math.floor(Math.random() * templates.length)];
+                
+                const [wikiSummary, quote] = await Promise.all([
                     fetchWikipediaSummary(era.wikiTopic),
-                    fetchHistoricalQuote(),
-                    fetchHistoricalEvent()
+                    fetchHistoricalQuote()
                 ]);
 
-                let description = '';
+                let description = `📍 ${era.period}\n\n${template.situation}\n\n`;
                 
-                // Use Wikipedia summary as primary source
                 if (wikiSummary) {
-                    description = wikiSummary.substring(0, 280);
-                } else if (historicalFact) {
-                    description = `${historicalFact}\n\nAs a leader in ${era.name}, how would you respond to such momentous events?`;
-                } else {
-                    description = `You are a leader in ${era.name}. Historical forces are in motion, requiring your guidance.`;
+                    description += `📚 Historical Context: ${wikiSummary.substring(0, 180)}...\n\n`;
                 }
-
-                // Add quote for flavor if available
+                
                 if (quote) {
-                    description += `\n\n💭 ${quote}`;
+                    description += `💭 "${quote}"\n\n`;
                 }
 
+                document.getElementById('apiStatus').textContent = `✅ Historical data loaded from ${era.name}`;
+                
                 return {
-                    title: `${era.name} - Critical Decision`,
+                    title: template.title,
                     description: description,
-                    choices: [
-                        { text: 'Embrace progress and change', impact: 'Society advances with innovation' },
-                        { text: 'Preserve tradition and stability', impact: 'Cultural heritage is maintained' }
-                    ]
+                    choices: template.choices
                 };
             } catch (error) {
                 console.error('Event generation error:', error);
+                document.getElementById('apiStatus').textContent = '⚠️ Using offline historical data';
+                
+                const templates = getEventTemplates(era);
+                const template = templates[0];
+                
                 return {
-                    title: `${era.name} - Historical Crossroads`,
-                    description: `The winds of change blow through ${era.name}. Your decisions will shape the future.`,
-                    choices: [
-                        { text: 'Forge ahead boldly', impact: 'Rapid transformation occurs' },
-                        { text: 'Proceed with caution', impact: 'Stable progress is maintained' }
-                    ]
+                    title: template.title,
+                    description: `📍 ${era.period}\n\n${template.situation}`,
+                    choices: template.choices
                 };
             }
         }
 
         async function displayEvent() {
-            const era = eras[Math.floor(Math.random() * eras.length)];
-            const event = await generateEvent(era);
+            if (gameState.turn >= gameState.maxTurns) {
+                endGame(true);
+                return;
+            }
 
-            gameState.currentYear = era.year;
-            gameState.era = era.name;
-            gameState.currentEvent = event;
-
-            document.getElementById('apiStatus').textContent = '✅ Real data from Wikipedia, ZenQuotes & History APIs';
-            document.getElementById('yearDisplay').textContent = era.year;
-            document.getElementById('eraDisplay').textContent = era.name;
-            document.getElementById('periodDisplay').textContent = era.period;
-            document.getElementById('locationDisplay').textContent = era.name;
+            const event = await generateEvent();
+            
+            document.getElementById('eventTitle').textContent = event.title;
             document.getElementById('eventDescription').textContent = event.description;
             document.getElementById('consequences').style.display = 'none';
 
             const choicesContainer = document.getElementById('choicesContainer');
             choicesContainer.innerHTML = '';
+            
             event.choices.forEach((choice) => {
                 const btn = document.createElement('button');
                 btn.className = 'choice-btn';
-                btn.innerHTML = `<strong>${choice.text}</strong><br><span style="font-size: 0.85em; opacity: 0.9;">→ ${choice.impact}</span>`;
+                const effectsText = Object.entries(choice.effects)
+                    .map(([stat, val]) => `${stat.charAt(0).toUpperCase() + stat.slice(1)} ${val > 0 ? '+' : ''}${val}`)
+                    .join(', ');
+                btn.innerHTML = `<strong>${choice.text}</strong><br><span style="font-size: 0.85em; opacity: 0.9;">📊 ${effectsText}</span>`;
                 btn.onclick = () => makeChoice(choice);
                 choicesContainer.appendChild(btn);
             });
         }
 
+        function updateStats() {
+            document.getElementById('stabilityDisplay').textContent = gameState.stability;
+            document.getElementById('innovationDisplay').textContent = gameState.innovation;
+            document.getElementById('cultureDisplay').textContent = gameState.culture;
+            document.getElementById('economyDisplay').textContent = gameState.economy;
+            
+            const progress = (gameState.turn / gameState.maxTurns) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressBar').textContent = `Turn ${gameState.turn}/${gameState.maxTurns}`;
+            
+            ['stability', 'innovation', 'culture', 'economy'].forEach(stat => {
+                const elem = document.getElementById(stat + 'Display');
+                const val = gameState[stat];
+                if (val < 20) elem.style.color = '#ff4444';
+                else if (val < 40) elem.style.color = '#ff9944';
+                else if (val > 70) elem.style.color = '#44ff44';
+                else elem.style.color = '#667eea';
+            });
+        }
+
         function makeChoice(choice) {
-            gameState.choicesMade++;
-            gameState.historyChanged += 10;
+            gameState.turn++;
+            
+            Object.entries(choice.effects).forEach(([stat, value]) => {
+                gameState[stat] = Math.max(0, Math.min(100, gameState[stat] + value));
+            });
+            
             gameState.decisions.push({
-                era: gameState.era,
-                year: gameState.currentYear,
+                era: gameState.currentEra.name,
+                turn: gameState.turn,
                 choice: choice.text,
-                impact: choice.impact
+                effects: choice.effects
             });
 
-            document.getElementById('choicesDisplay').textContent = gameState.choicesMade;
-            document.getElementById('impactDisplay').textContent = Math.min(gameState.historyChanged, 100) + '%';
+            updateStats();
+            
+            // Check for collapse
+            const { stability, innovation, culture, economy } = gameState;
+            let collapseReason = null;
+            
+            if (stability <= 0) collapseReason = '⚖️ Stability collapsed - social chaos consumed your civilization';
+            else if (innovation <= 0) collapseReason = '⚡ Innovation died - stagnation led to irrelevance';
+            else if (culture <= 0) collapseReason = '🎭 Culture withered - your people lost all sense of purpose';
+            else if (economy <= 0) collapseReason = '💰 Economy failed - poverty and famine devastated your lands';
+            
+            if (collapseReason) {
+                gameState.gameOver = true;
+                endGame(false, collapseReason);
+                return;
+            }
 
             const consequencesDiv = document.getElementById('consequences');
-            consequencesDiv.innerHTML = `⚡ <strong>Timeline Impact:</strong> ${choice.impact}`;
+            let impactMessage = `⚡ <strong>Decision Recorded:</strong><br>${choice.text}<br><br>`;
+            
+            Object.entries(choice.effects).forEach(([stat, val]) => {
+                const icon = { stability: '⚖️', innovation: '⚡', culture: '🎭', economy: '💰' }[stat];
+                impactMessage += `${icon} ${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${val > 0 ? '+' : ''}${val}<br>`;
+            });
+
+            if (gameState.turn >= gameState.maxTurns) {
+                impactMessage += '<br>🎊 <strong>SURVIVED!</strong> Calculating your civilization\'s future...';
+            }
+            
+            consequencesDiv.innerHTML = impactMessage;
             consequencesDiv.style.display = 'block';
 
             updateHistoryTimeline();
-            setTimeout(() => displayEvent(), 2000);
+            
+            if (gameState.turn < gameState.maxTurns) {
+                setTimeout(() => displayEvent(), 3500);
+            } else {
+                setTimeout(() => endGame(true), 3000);
+            }
         }
 
         function updateHistoryTimeline() {
             const timeline = document.getElementById('historyTimeline');
-            timeline.innerHTML = gameState.decisions.map((d) => `
-                <div class="timeline-event">
-                    <strong>${d.era} (${d.year})</strong><br>
-                    ${d.choice}<br>
-                    <em>${d.impact}</em>
-                </div>
-            `).reverse().join('');
+            timeline.innerHTML = gameState.decisions.map((d, i) => {
+                const effectsText = Object.entries(d.effects)
+                    .map(([stat, val]) => `${stat.substring(0, 3)}: ${val > 0 ? '+' : ''}${val}`)
+                    .join(', ');
+                return `
+                    <div class="timeline-event">
+                        <strong>Turn ${d.turn}: ${d.era}</strong><br>
+                        ${d.choice}<br>
+                        <em style="font-size: 0.9em;">📊 ${effectsText}</em>
+                    </div>
+                `;
+            }).reverse().join('');
+        }
+
+        function endGame(victory, collapseReason = null) {
+            const eventTitle = document.getElementById('eventTitle');
+            const eventDesc = document.getElementById('eventDescription');
+            const choicesContainer = document.getElementById('choicesContainer');
+            const consequences = document.getElementById('consequences');
+            
+            if (!victory) {
+                eventTitle.textContent = '💀 CIVILIZATION COLLAPSED';
+                eventDesc.textContent = collapseReason || 'Your civilization crumbled under the weight of poor decisions.';
+                consequences.innerHTML = '<strong>☠️ GAME OVER</strong><br><br>One of your critical attributes reached zero. Balance is key to survival!';
+                consequences.style.display = 'block';
+                choicesContainer.innerHTML = '<button class="choice-btn" onclick="resetGame()">🔄 Try Again</button>';
+                return;
+            }
+            
+            const { stability, innovation, culture, economy } = gameState;
+            const total = stability + innovation + culture + economy;
+            const dominant = Math.max(stability, innovation, culture, economy);
+            
+            let futureTitle = '';
+            let futureDesc = '';
+            let rating = '';
+            
+            if (Math.abs(stability - innovation) < 15 && Math.abs(culture - economy) < 15 && total > 250) {
+                futureTitle = '⭐ THE PERFECT CIVILIZATION';
+                futureDesc = 'Through masterful leadership, you achieved perfect harmony across all pillars of civilization. Stability, innovation, culture, and economy all flourish in balance. Your civilization becomes a beacon of hope, achieving unprecedented prosperity. Historians will study your reign for millennia as the pinnacle of human achievement.';
+                rating = 'S-TIER VICTORY';
+            } else if (innovation === dominant && innovation > 70) {
+                futureTitle = '🚀 THE TECHNO-UTOPIA';
+                futureDesc = `Your relentless pursuit of innovation (${innovation}) has launched humanity into a golden age of technology. Flying cities, AI governance, and space colonies define your civilization. However, ${stability < 40 ? 'social instability' : culture < 40 ? 'cultural erosion' : 'economic inequality'} remains a persistent challenge.`;
+                rating = innovation > 85 ? 'A-TIER VICTORY' : 'B-TIER VICTORY';
+            } else if (culture === dominant && culture > 70) {
+                futureTitle = '🎭 THE CULTURAL RENAISSANCE';
+                futureDesc = `Your dedication to culture (${culture}) created an artistic paradise. Philosophy, art, and tradition flourish, and your civilization's wisdom spreads globally. Yet ${innovation < 40 ? 'technological stagnation' : economy < 40 ? 'economic struggles' : 'external threats'} loom on the horizon.`;
+                rating = culture > 85 ? 'A-TIER VICTORY' : 'B-TIER VICTORY';
+            } else if (economy === dominant && economy > 70) {
+                futureTitle = '💎 THE GOLDEN EMPIRE';
+                futureDesc = `Your economic mastery (${economy}) built the wealthiest civilization in history. Trade networks span the globe, prosperity is abundant, and your treasury overflows. But ${stability < 40 ? 'inequality breeds unrest' : culture < 40 ? 'materialism erodes meaning' : 'innovation lags behind'}.`;
+                rating = economy > 85 ? 'A-TIER VICTORY' : 'B-TIER VICTORY';
+            } else if (stability === dominant && stability > 70) {
+                futureTitle = '🏛️ THE ETERNAL ORDER';
+                futureDesc = `Your focus on stability (${stability}) created an enduring civilization of law, order, and peace. Institutions are unshakeable and your people live in security. However, ${innovation < 40 ? 'progress has stalled' : culture < 40 ? 'conformity stifles creativity' : 'economic dynamism suffers'}.`;
+                rating = stability > 85 ? 'A-TIER VICTORY' : 'B-TIER VICTORY';
+            } else if (total < 180) {
+                futureTitle = '⚠️ THE STRUGGLING STATE';
+                futureDesc = 'Your civilization survives, but barely. All attributes remain weak and your people face daily hardships. While you avoided total collapse, mediocrity defines your legacy. Future generations will remember this era as a time of missed opportunities.';
+                rating = 'C-TIER VICTORY';
+            } else {
+                futureTitle = '🌟 THE STABLE CIVILIZATION';
+                futureDesc = `Your balanced approach created a functional, if unspectacular, civilization. With moderate scores across all attributes (Total: ${total}/400), your people enjoy reasonable prosperity and stability. History will remember you as a competent leader who kept the ship afloat.`;
+                rating = 'B-TIER VICTORY';
+            }
+            
+            eventTitle.textContent = `🎊 ${futureTitle}`;
+            eventDesc.textContent = futureDesc;
+            consequences.innerHTML = `<strong>🏆 ${rating}</strong><br><br>Final Stats: ⚖️${stability} ⚡${innovation} 🎭${culture} 💰${economy}<br>Total Score: ${total}/400`;
+            consequences.style.display = 'block';
+            choicesContainer.innerHTML = `
+                <button class="choice-btn" onclick="resetGame()">🔄 Play Again</button>
+                <button class="choice-btn" onclick="shareStory()">📤 Share Result</button>
+            `;
         }
 
         function shareStory() {
-            const text = `🎭 Chronicle Builder:\n\n${gameState.decisions.map(d => `${d.era}: ${d.choice}`).join('\n')}\n\nChoices: ${gameState.choicesMade} | Impact: ${Math.min(gameState.historyChanged, 100)}%`;
-            navigator.clipboard.writeText(text).then(() => alert('✅ Copied!')).catch(() => alert('Failed'));
+            const { stability, innovation, culture, economy } = gameState;
+            const total = stability + innovation + culture + economy;
+            const text = `🎭 Chronicle Builder Results:\n\nSurvived ${gameState.turn} turns!\nFinal Stats:\n⚖️ Stability: ${stability}\n⚡ Innovation: ${innovation}\n🎭 Culture: ${culture}\n💰 Economy: ${economy}\n📊 Total Score: ${total}/400\n\nDecisions:\n${gameState.decisions.map((d, i) => `${i+1}. ${d.era}: ${d.choice}`).join('\n')}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Your chronicle has been copied to clipboard!');
+            }).catch(() => {
+                alert('❌ Failed to copy. Try again!');
+            });
         }
 
         function resetGame() {
-            gameState = { currentYear: 2024, era: 'Modern', choicesMade: 0, historyChanged: 0, decisions: [], currentEvent: null };
-            document.getElementById('choicesDisplay').textContent = '0';
-            document.getElementById('impactDisplay').textContent = '0%';
-            document.getElementById('historyTimeline').innerHTML = '<div style="text-align: center; color: #999;">Your decisions will appear here...</div>';
+            gameState = {
+                turn: 0,
+                maxTurns: 10,
+                stability: 50,
+                innovation: 50,
+                culture: 50,
+                economy: 50,
+                decisions: [],
+                currentEra: null,
+                gameOver: false
+            };
+            
+            document.getElementById('historyTimeline').innerHTML = '<div style="text-align: center; color: #999;">Your chronicle will unfold here...</div>';
+            document.getElementById('consequences').style.display = 'none';
+            updateStats();
             displayEvent();
         }
-
-        displayEvent();
     </script>
 </body>
 </html>
