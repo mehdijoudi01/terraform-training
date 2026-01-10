@@ -598,12 +598,16 @@
         // Convert loaded case to game format with icons
         function convertCase(rawCase) {
             // Convert clues to game format with icons
-            const cluesWithIcons = rawCase.clues.slice(0, 12).map((clueText, index) => ({
-                id: index + 1,
-                icon: clueIcons[index % clueIcons.length],
-                text: clueText,
-                relevant: Math.random() > 0.4 // 60% chance of being relevant
-            }));
+            const cluesWithIcons = rawCase.clues.slice(0, 12).map((clueText, index) => {
+                // Ensure at least 5-7 clues are relevant (not random)
+                const isRelevant = index < 7; // First 7 clues are relevant
+                return {
+                    id: index + 1,
+                    icon: clueIcons[index % clueIcons.length],
+                    text: clueText,
+                    relevant: isRelevant
+                };
+            });
 
             // Convert suspects to game format with icons
             const suspectsWithIcons = rawCase.suspects.map((suspect, index) => ({
@@ -804,13 +808,15 @@
             const title = document.getElementById('resultTitle');
             const message = document.getElementById('resultMessage');
             
-            if (suspect.correct && selectedRelevantClues.length >= 3) {
+            // Simplified check: correct suspect + at least 3 clues selected
+            if (suspect.correct && selectedClues.length >= 3) {
                 title.textContent = '🎉 Case Solved!';
                 title.style.color = '#27ae60';
                 message.innerHTML = `
                     <strong>Excellent detective work!</strong><br><br>
                     You correctly identified <strong>${suspect.name}</strong> as the culprit!<br><br>
                     <em>${currentCase.solution}</em><br><br>
+                    <strong>Clues used:</strong> ${selectedClues.length}/12<br>
                     <strong>Relevant clues found:</strong> ${selectedRelevantClues.length}/${relevantClues.length}
                 `;
                 
@@ -831,8 +837,8 @@
                 } else {
                     message.innerHTML = `
                         <strong>Insufficient evidence.</strong><br><br>
-                        You identified the right suspect, but didn't collect enough relevant clues to prove it!<br><br>
-                        <strong>Relevant clues found:</strong> ${selectedRelevantClues.length}/${relevantClues.length}
+                        You need at least 3 clues to make an accusation!<br><br>
+                        <strong>Clues selected:</strong> ${selectedClues.length}/3 minimum
                     `;
                 }
             }

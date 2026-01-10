@@ -633,7 +633,14 @@
                 return;
             }
             
-            if (userAnswer === correctAnswer) {
+            // More flexible answer checking - accept partial matches and common variations
+            const isCorrect = userAnswer === correctAnswer || 
+                              correctAnswer.includes(userAnswer) || 
+                              userAnswer.includes(correctAnswer) ||
+                              // Remove common articles and check again
+                              userAnswer.replace(/^(a |an |the )/, '') === correctAnswer.replace(/^(a |an |the )/, '');
+            
+            if (isCorrect) {
                 // Correct answer
                 gameState.solvedCount++;
                 gameState.score += 50;
@@ -648,6 +655,7 @@
                 message.innerHTML = `
                     <strong>Well done!</strong><br><br>
                     ${riddles[gameState.currentRiddle].story}<br><br>
+                    <strong>Answer:</strong> ${riddles[gameState.currentRiddle].answer}<br><br>
                     <em>+50 points</em>
                 `;
                 
@@ -666,6 +674,7 @@
                 
                 message.innerHTML = `
                     <strong>Not quite right!</strong><br><br>
+                    You answered: "${userAnswer}"<br><br>
                     Keep thinking... or try the hint!<br><br>
                     <em>Try again!</em>
                 `;

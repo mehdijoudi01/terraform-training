@@ -397,12 +397,38 @@
         }
 
         // Character data
-        // Character data - loaded from JSON
+        // Character data - loaded from JSON or use fallback
+        let allCharacterData = null;
+        let preGeneratedCharacters = [];
+
+        // Fallback data arrays
+        const fallbackRaces = [
+            { name: "Human", icon: "🧑", description: "Versatile and ambitious", traits: "adaptable, determined" },
+            { name: "Elf", icon: "🧝", description: "Graceful and wise", traits: "agile, perceptive" },
+            { name: "Dwarf", icon: "⛏️", description: "Hardy and steadfast", traits: "resilient, craftsman" },
+            { name: "Orc", icon: "💪", description: "Strong and fierce", traits: "powerful, warrior" }
+        ];
+
+        const fallbackClasses = [
+            { name: "Warrior", icon: "⚔️", description: "Master of combat", abilities: "strength, defense" },
+            { name: "Mage", icon: "🔮", description: "Wielder of arcane power", abilities: "magic, intelligence" },
+            { name: "Rogue", icon: "🗡️", description: "Master of stealth", abilities: "agility, cunning" },
+            { name: "Cleric", icon: "✨", description: "Divine healer", abilities: "healing, wisdom" }
+        ];
+
+        const fallbackEvents = [
+            { name: "Orphaned", icon: "🏚️", description: "Lost parents early", impact: "independent, resourceful" },
+            { name: "Noble Birth", icon: "👑", description: "Born into nobility", impact: "educated, privileged" },
+            { name: "Apprenticeship", icon: "📚", description: "Trained by a master", impact: "skilled, disciplined" },
+            { name: "Tragedy", icon: "💔", description: "Survived a disaster", impact: "hardened, survivor" },
+            { name: "Adventure", icon: "🗺️", description: "Early travels", impact: "experienced, worldly" },
+            { name: "Prophecy", icon: "🌟", description: "Marked by destiny", impact: "chosen, burdened" }
+        ];
+
+        // Working arrays (either from JSON or fallback)
         let races = [];
         let classes = [];
         let events = [];
-        let allCharacterData = null;
-        let preGeneratedCharacters = [];
 
         // Load character data from JSON
         async function loadCharacterData() {
@@ -445,33 +471,18 @@
                     { name: "Rogue", icon: "🗡️", description: "Master of stealth", abilities: "agility, cunning" },
                     { name: "Cleric", icon: "✨", description: "Divine healer", abilities: "healing, wisdom" }
                 ];
+                events = [
+                    { name: "Orphaned", icon: "🏚️", description: "Lost parents early", impact: "independent, resourceful" },
+                    { name: "Noble Birth", icon: "👑", description: "Born into nobility", impact: "educated, privileged" },
+                    { name: "Apprenticeship", icon: "📚", description: "Trained by a master", impact: "skilled, disciplined" },
+                    { name: "Tragedy", icon: "💔", description: "Survived a disaster", impact: "hardened, survivor" }
+                ];
                 return false;
             }
         }
 
         // Legacy arrays (removed, now loaded from JSON)
-        const legacyRaces = [
-            { name: "Human", icon: "👨", description: "Versatile and ambitious", traits: "adaptable, determined" },
-            { name: "Elf", icon: "🧝", description: "Graceful and wise", traits: "agile, perceptive" },
-            { name: "Dwarf", icon: "⛏️", description: "Hardy and steadfast", traits: "resilient, craftsman" },
-            { name: "Orc", icon: "💪", description: "Strong and fierce", traits: "powerful, warrior" }
-        ];
-
-        const classes = [
-            { name: "Warrior", icon: "⚔️", description: "Master of combat", abilities: "strength, defense" },
-            { name: "Mage", icon: "🔮", description: "Wielder of arcane power", abilities: "magic, intelligence" },
-            { name: "Rogue", icon: "🗡️", description: "Master of stealth", abilities: "agility, cunning" },
-            { name: "Cleric", icon: "✨", description: "Divine healer", abilities: "healing, wisdom" }
-        ];
-
-        const events = [
-            { name: "Orphaned", icon: "🏚️", description: "Lost parents early", impact: "independent, resourceful" },
-            { name: "Noble Birth", icon: "👑", description: "Born into nobility", impact: "educated, privileged" },
-            { name: "Apprenticeship", icon: "📚", description: "Trained by a master", impact: "skilled, disciplined" },
-            { name: "Tragedy", icon: "💔", description: "Survived a disaster", impact: "hardened, survivor" },
-            { name: "Adventure", icon: "🗺️", description: "Early travels", impact: "experienced, worldly" },
-            { name: "Prophecy", icon: "🌟", description: "Marked by destiny", impact: "chosen, burdened" }
-        ];
+        // These are initialized in loadCharacterData() or fallback
 
         let character = {
             race: null,
@@ -555,10 +566,15 @@
             if (preGeneratedCharacters && preGeneratedCharacters.length > 0) {
                 const randomChar = preGeneratedCharacters[Math.floor(Math.random() * preGeneratedCharacters.length)];
                 
-                // Use pre-generated data
-                character.name = `${randomChar.race} ${randomChar.class}`;
+                // Ensure we have selected race, class, event from UI or use random ones
+                if (!character.race) character.race = races[Math.floor(Math.random() * races.length)];
+                if (!character.class) character.class = classes[Math.floor(Math.random() * classes.length)];
+                if (!character.event) character.event = events[Math.floor(Math.random() * events.length)];
+                
+                // Use pre-generated data with UI selections
+                character.name = `${character.race.name} ${character.class.name}`;
                 character.age = Math.floor(Math.random() * 50) + 18;
-                character.alignment = randomChar.personality;
+                character.alignment = randomChar.personality || 'Neutral Good';
                 
                 // Display backstory
                 document.getElementById('characterName').textContent = character.name;
@@ -569,10 +585,18 @@
                 document.getElementById('saveBtn').style.display = 'block';
                 document.getElementById('backstoryText').textContent = randomChar.backstory;
                 
+                // Hide step3
+                document.getElementById('step3').style.display = 'none';
+                
                 return;
             }
             
             // Fallback to legacy generation
+            // Ensure all required properties exist
+            if (!character.race) character.race = races[0];
+            if (!character.class) character.class = classes[0];
+            if (!character.event) character.event = events[0];
+            
             // Generate name
             const firstNames = ["Aria", "Brynn", "Cole", "Dana", "Erik", "Finn", "Gwen", "Hiro"];
             const lastNames = ["Stormborn", "Ironforge", "Shadowblade", "Brightwood", "Darkmantle"];

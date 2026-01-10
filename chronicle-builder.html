@@ -1909,16 +1909,21 @@
                 );
             }
 
-            // Progressive difficulty - double penalties on turns 7-10
+            // Progressive difficulty - increase penalties on turns 7-10
+            // BUT only apply to NEW templates, not already modified ones
             if (gameState.turn >= 7) {
                 templates.forEach(template => {
-                    template.choices.forEach(choice => {
-                        Object.keys(choice.effects).forEach(stat => {
-                            if (choice.effects[stat] < 0) {
-                                choice.effects[stat] *= 1.5; // 50% more penalties in late game
-                            }
+                    // Check if not already modified (prevent double multiplication)
+                    if (!template._difficultyApplied) {
+                        template.choices.forEach(choice => {
+                            Object.keys(choice.effects).forEach(stat => {
+                                if (choice.effects[stat] < 0) {
+                                    choice.effects[stat] = Math.round(choice.effects[stat] * 1.5); // 50% more penalties
+                                }
+                            });
                         });
-                    });
+                        template._difficultyApplied = true; // Mark as modified
+                    }
                 });
             }
 

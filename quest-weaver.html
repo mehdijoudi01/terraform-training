@@ -692,22 +692,25 @@
             
             // Load quest data
             const loaded = await loadQuestsData();
-            if (!loaded) {
-                if (chapterText) chapterText.textContent = 'Failed to load quests. Please refresh the page.';
-                return;
-            }
             
-            // Load random quest
-            if (allQuestsData && allQuestsData.quests) {
+            // Load random quest from JSON or use fallback
+            if (loaded && allQuestsData && allQuestsData.quests && allQuestsData.quests.length > 0) {
                 currentQuestId = Math.floor(Math.random() * allQuestsData.quests.length);
                 const rawQuest = allQuestsData.quests[currentQuestId];
                 quests = convertQuest(rawQuest);
+                console.log('Loaded quest from JSON:', rawQuest.title);
+            } else {
+                // Use fallback quests array (already defined above)
+                console.log('Using fallback quests');
+                if (chapterText) chapterText.textContent = '';
             }
             
+            // Load saved game state
             const saved = localStorage.getItem('quest-weaver-state');
             if (saved) {
                 gameState = JSON.parse(saved);
             }
+            
             updateDisplay();
             loadQuest();
         }
