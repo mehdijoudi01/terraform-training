@@ -364,6 +364,53 @@
             color: #e0e0e0;
         }
 
+        .leader-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .diplomatic-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .diplomatic-modal.show {
+            display: flex !important;
+        }
+
+        .diplomatic-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        body.dark-mode .diplomatic-content {
+            background: #0f3460;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .diplomatic-content h2 {
+            color: #9fb3ff;
+        }
+        
+        body.dark-mode .diplomatic-content .choice-btn {
+            background: #667eea;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .game-content {
                 padding: 20px;
@@ -396,6 +443,31 @@
     </style>
 </head>
 <body>
+    <script>
+        // Define critical functions early to avoid ReferenceError
+        let selectedLeader = null;
+        
+        function selectLeader(leaderType) {
+            selectedLeader = leaderType;
+            // Highlight selected leader
+            document.querySelectorAll('.leader-card').forEach(card => {
+                card.style.borderColor = 'transparent';
+                card.style.boxShadow = '';
+            });
+            const cards = document.querySelectorAll('.leader-card');
+            cards.forEach(card => {
+                if (card.onclick && card.onclick.toString().includes(leaderType)) {
+                    card.style.borderColor = '#ffd700';
+                    card.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.5)';
+                }
+            });
+            
+            // Show difficulty selection
+            document.getElementById('leaderSelection').style.display = 'none';
+            document.getElementById('difficultySelection').style.display = 'block';
+        }
+    </script>
+    
     <div class="intro-modal" id="introModal">
         <div class="intro-content">
             <h2>📖 Welcome to Chronicle Builder</h2>
@@ -434,14 +506,105 @@
 
             <p style="text-align: center; margin-top: 25px; font-size: 1.1em;"><strong>Will you forge a golden age or descend into chaos?</strong></p>
             
-            <p style="text-align: center; margin-top: 25px; font-size: 1.1em;"><strong>Choose your difficulty:</strong></p>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
-                <button class="start-btn" onclick="startGame('normal')" style="background: #4CAF50; padding: 15px;">🎮 Normal<br><span style="font-size: 0.8em;">Start at 50</span></button>
-                <button class="start-btn" onclick="startGame('hard')" style="background: #FF9800; padding: 15px;">⚔️ Hard<br><span style="font-size: 0.8em;">Start at 40</span></button>
-                <button class="start-btn" onclick="startGame('nightmare')" style="background: #f44336; padding: 15px;">💀 Nightmare<br><span style="font-size: 0.8em;">Start at 30</span></button>
+            <p style="text-align: center; margin-top: 25px; font-size: 1.1em;"><strong>Choose your leader:</strong></p>
+            <div id="leaderSelection" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                <div class="leader-card" onclick="selectLeader('conqueror')" style="padding: 15px; background: linear-gradient(135deg, #ff6b6b, #c92a2a); border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 3px solid transparent;">
+                    <div style="font-size: 2em; text-align: center; margin-bottom: 8px;">⚔️</div>
+                    <div style="font-weight: bold; text-align: center; color: white; margin-bottom: 5px;">The Conqueror</div>
+                    <div style="font-size: 0.85em; text-align: center; color: rgba(255,255,255,0.9);">+2 Stability/turn, -1 Culture/turn</div>
+                </div>
+                <div class="leader-card" onclick="selectLeader('scholar')" style="padding: 15px; background: linear-gradient(135deg, #4dabf7, #1c7ed6); border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 3px solid transparent;">
+                    <div style="font-size: 2em; text-align: center; margin-bottom: 8px;">📚</div>
+                    <div style="font-weight: bold; text-align: center; color: white; margin-bottom: 5px;">The Scholar</div>
+                    <div style="font-size: 0.85em; text-align: center; color: rgba(255,255,255,0.9);">+3 Innovation/turn, -1 Economy/turn</div>
+                </div>
+                <div class="leader-card" onclick="selectLeader('diplomat')" style="padding: 15px; background: linear-gradient(135deg, #51cf66, #2f9e44); border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 3px solid transparent;">
+                    <div style="font-size: 2em; text-align: center; margin-bottom: 8px;">🤝</div>
+                    <div style="font-weight: bold; text-align: center; color: white; margin-bottom: 5px;">The Diplomat</div>
+                    <div style="font-size: 0.85em; text-align: center; color: rgba(255,255,255,0.9);">+2 Culture, +1 Stability/turn</div>
+                </div>
+                <div class="leader-card" onclick="selectLeader('merchant')" style="padding: 15px; background: linear-gradient(135deg, #ffd43b, #fab005); border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 3px solid transparent;">
+                    <div style="font-size: 2em; text-align: center; margin-bottom: 8px;">💰</div>
+                    <div style="font-weight: bold; text-align: center; color: white; margin-bottom: 5px;">The Merchant</div>
+                    <div style="font-size: 0.85em; text-align: center; color: rgba(255,255,255,0.9);">+3 Economy, +1 Prestige/turn</div>
+                </div>
+                <div class="leader-card" onclick="selectLeader('revolutionary')" style="padding: 15px; background: linear-gradient(135deg, #ff6b9d, #c92a7c); border-radius: 8px; cursor: pointer; transition: transform 0.2s; border: 3px solid transparent; grid-column: span 2;">
+                    <div style="font-size: 2em; text-align: center; margin-bottom: 8px;">🔥</div>
+                    <div style="font-weight: bold; text-align: center; color: white; margin-bottom: 5px;">The Revolutionary</div>
+                    <div style="font-size: 0.85em; text-align: center; color: rgba(255,255,255,0.9);">+2 Momentum/turn, -1 Stability/turn</div>
+                </div>
+            </div>
+            
+            <div id="difficultySelection" style="display: none;">
+                <p style="text-align: center; margin-top: 25px; font-size: 1.1em;"><strong>Choose your difficulty:</strong></p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                <button class="start-btn" onclick="setTimeout(() => startGame('normal'), 0)" style="background: #4CAF50; padding: 15px;">🎮 Normal<br><span style="font-size: 0.8em;">Start at 50</span></button>
+                <button class="start-btn" onclick="setTimeout(() => startGame('hard'), 0)" style="background: #FF9800; padding: 15px;">⚔️ Hard<br><span style="font-size: 0.8em;">Start at 40</span></button>
+                <button class="start-btn" onclick="setTimeout(() => startGame('nightmare'), 0)" style="background: #f44336; padding: 15px;">💀 Nightmare<br><span style="font-size: 0.8em;">Start at 30</span></button>
+                </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .leader-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .leader-card.selected {
+            border: 3px solid #fff !important;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        .rival-box {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        body.dark-mode .rival-box {
+            background: #1a1a2e;
+            border-color: #9fb3ff;
+        }
+        .rival-power-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .rival-power-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+        .diplomatic-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .diplomatic-modal.show {
+            display: flex;
+        }
+        .diplomatic-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+        }
+        body.dark-mode .diplomatic-content {
+            background: #0f3460;
+            color: #e0e0e0;
+        }
+    </style>
 
     <div class="header-bar">
         <button class="back-btn" onclick="goBack()" title="Back to Hub">←</button>
@@ -452,6 +615,45 @@
     <div class="container">
         <div class="game-content">
             <div class="api-status" id="apiStatus">🔄 Loading historical data...</div>
+
+            <div id="leaderDisplay" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px; border-radius: 10px; margin-bottom: 20px; color: white; display: none;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div id="leaderEmoji" style="font-size: 3em;">⚔️</div>
+                    <div style="flex: 1;">
+                        <div id="leaderName" style="font-size: 1.3em; font-weight: bold;">The Conqueror</div>
+                        <div id="leaderBonus" style="font-size: 0.9em; opacity: 0.9;">+2 Stability/turn</div>
+                    </div>
+                    <button id="leaderActionBtn" onclick="useLeaderAction()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); border: 2px solid white; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; transition: all 0.3s;">
+                        ⚡ Special Action
+                    </button>
+                </div>
+            </div>
+
+            <div id="rivalsDisplay" style="display: none; margin-bottom: 20px;">
+                <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">🌍 Civilization Rankings</h3>
+                
+                <!-- Player Score -->
+                <div id="playerScore" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 12px; border-radius: 8px; margin-bottom: 10px; color: white; border: 3px solid #ffd700;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="playerRankEmoji" style="font-size: 1.5em;">🥇</span>
+                            <div>
+                                <div style="font-weight: bold; font-size: 1.1em;">👑 Your Civilization</div>
+                                <div id="playerLeaderName" style="font-size: 0.85em; opacity: 0.9;">The Conqueror</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div id="playerTotalScore" style="font-size: 1.5em; font-weight: bold;">200</div>
+                            <div style="font-size: 0.8em; opacity: 0.9;">Total Power</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; height: 8px; overflow: hidden;">
+                        <div id="playerPowerBar" style="width: 50%; background: #ffd700; height: 100%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+                
+                <div id="rivalsList"></div>
+            </div>
 
             <div class="stats">
                 <div class="stat-box">
@@ -508,6 +710,14 @@
         </div>
     </div>
 
+    <div class="diplomatic-modal" id="diplomaticModal">
+        <div class="diplomatic-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">🤝 Diplomatic Phase</h2>
+            <p id="diplomaticText" style="margin-bottom: 20px; line-height: 1.6;">Choose your diplomatic stance with rival civilizations.</p>
+            <div id="diplomaticChoices" style="display: grid; gap: 10px;"></div>
+        </div>
+    </div>
+
     <script>
         let gameState = {
             turn: 0,
@@ -528,7 +738,61 @@
             eventMemory: [],
             technologies: [],
             leader: null,
-            difficulty: 'normal' // normal, hard, nightmare
+            leaderActionUsed: false,
+            difficulty: 'normal', // normal, hard, nightmare
+            rivals: [],
+            diplomaticPhase: false,
+            diplomaticActionTaken: false,
+            warWith: []
+        };
+
+        // Leader archetypes
+        const leaders = {
+            conqueror: {
+                name: 'The Conqueror',
+                emoji: '⚔️',
+                description: 'Military prowess and territorial expansion',
+                bonuses: { stability: 2 },
+                penalties: { culture: -1 },
+                special: 'Declare War (no stability penalty, +15 to all stats if won)',
+                startBonus: { stability: 10 }
+            },
+            scholar: {
+                name: 'The Scholar',
+                emoji: '📚',
+                description: 'Knowledge, research, and innovation',
+                bonuses: { innovation: 3 },
+                penalties: { economy: -1 },
+                special: 'Eureka Moment (instantly unlock a random technology)',
+                startBonus: { innovation: 15 }
+            },
+            diplomat: {
+                name: 'The Diplomat',
+                emoji: '🤝',
+                description: 'Peace, alliances, and cooperation',
+                bonuses: { culture: 2, stability: 1 },
+                penalties: {},
+                special: 'Peace Summit (reset all rivalries, +10 to all stats)',
+                startBonus: { culture: 10 }
+            },
+            merchant: {
+                name: 'The Merchant',
+                emoji: '💰',
+                description: 'Trade, wealth, and prosperity',
+                bonuses: { economy: 3, prestige: 1 },
+                penalties: { innovation: -1 },
+                special: 'Golden Age (double economy gains for 3 turns)',
+                startBonus: { economy: 15 }
+            },
+            revolutionary: {
+                name: 'The Revolutionary',
+                emoji: '🔥',
+                description: 'Radical change and bold reforms',
+                bonuses: { momentum: 2 },
+                penalties: { stability: -1 },
+                special: 'Revolution (reroll all stats to 50 + gain 20 prestige)',
+                startBonus: { momentum: 5 }
+            }
         };
 
         const eras = [
@@ -666,18 +930,37 @@
             const allHealthy = stability > 40 && innovation > 40 && culture > 40 && economy > 40;
             
             if (allHealthy) {
-                gameState.momentum += 5;
-                return { bonus: 5, message: '📈 Momentum +5: All stats healthy!' };
+                gameState.momentum = Math.min(20, gameState.momentum + 1);
+                
+                // Apply momentum bonus to all stats
+                const bonus = Math.min(5, Math.floor(gameState.momentum / 3));
+                if (bonus > 0) {
+                    gameState.stability = Math.min(100, gameState.stability + bonus);
+                    gameState.innovation = Math.min(100, gameState.innovation + bonus);
+                    gameState.culture = Math.min(100, gameState.culture + bonus);
+                    gameState.economy = Math.min(100, gameState.economy + bonus);
+                    return { bonus: bonus, message: `📈 Momentum Bonus: +${bonus} to all stats!` };
+                }
+                return { bonus: 0, message: '📈 Building momentum...' };
             } else {
-                const penalty = Math.min(gameState.momentum, 5);
-                gameState.momentum = Math.max(0, gameState.momentum - penalty);
-                return { bonus: -penalty, message: `📉 Momentum -${penalty}: Struggling civilization` };
+                gameState.momentum = Math.max(0, gameState.momentum - 1);
+                return { bonus: 0, message: gameState.momentum > 0 ? '📉 Momentum decreasing' : '' };
             }
         }
 
         // New: Prestige system
         function earnPrestige(totalImpact) {
-            const prestigeEarned = Math.floor(totalImpact / 15);
+            // Base prestige on impact magnitude and risk
+            let prestigeEarned = Math.floor(totalImpact / 12);
+            
+            // Bonus prestige for high-risk choices (large negative effects)
+            const hasHighRisk = Math.abs(Math.min(...Object.values(gameState.eventMemory[gameState.eventMemory.length - 1]?.effects || {}))) > 15;
+            if (hasHighRisk) prestigeEarned += 1;
+            
+            // Difficulty multiplier
+            const difficultyBonus = { normal: 1, hard: 1.3, nightmare: 1.7 };
+            prestigeEarned = Math.floor(prestigeEarned * (difficultyBonus[gameState.difficulty] || 1));
+            
             gameState.prestige += prestigeEarned;
             return prestigeEarned;
         }
@@ -703,7 +986,357 @@
             }
         }
 
+        function initializeRivals() {
+            const rivalNames = [
+                { name: 'Aurelia Empire', emoji: '👑', color: '#e74c3c' },
+                { name: 'Nordheim Kingdom', emoji: '⚡', color: '#3498db' }
+            ];
+            
+            // Rivals scale with difficulty - slightly weaker than player on average
+            const difficultyMods = {
+                normal: { base: 45, variance: 10 },
+                hard: { base: 38, variance: 8 },
+                nightmare: { base: 28, variance: 6 }
+            };
+            const mod = difficultyMods[gameState.difficulty] || difficultyMods.normal;
+            
+            gameState.rivals = rivalNames.map(rival => ({
+                ...rival,
+                stability: mod.base + Math.random() * mod.variance,
+                innovation: mod.base + Math.random() * mod.variance,
+                culture: mod.base + Math.random() * mod.variance,
+                economy: mod.base + Math.random() * mod.variance,
+                alive: true,
+                relationship: 'neutral', // neutral, ally, war
+                ai: true,
+                personality: Math.random() > 0.5 ? 'aggressive' : 'defensive' // AI behavior type
+            }));
+        }
+
+        function updateRivalsDisplay() {
+            const rivalsList = document.getElementById('rivalsList');
+            if (!rivalsList) return;
+            
+            // Update player score
+            const playerTotal = gameState.stability + gameState.innovation + gameState.culture + gameState.economy;
+            const playerTotalEl = document.getElementById('playerTotalScore');
+            const playerLeaderNameEl = document.getElementById('playerLeaderName');
+            const playerPowerBar = document.getElementById('playerPowerBar');
+            const playerRankEmoji = document.getElementById('playerRankEmoji');
+            
+            if (playerTotalEl) playerTotalEl.textContent = Math.round(playerTotal);
+            if (playerPowerBar) playerPowerBar.style.width = `${(playerTotal / 400) * 100}%`;
+            
+            // Show leader name
+            if (playerLeaderNameEl && gameState.leader) {
+                const leader = leaders[gameState.leader];
+                if (leader) playerLeaderNameEl.textContent = leader.emoji + ' ' + leader.name;
+            }
+            
+            // Calculate player rank
+            const aliveRivals = gameState.rivals.filter(r => r.alive);
+            const allScores = [playerTotal, ...aliveRivals.map(r => r.stability + r.innovation + r.culture + r.economy)];
+            const sorted = [...allScores].sort((a, b) => b - a);
+            const playerRank = sorted.indexOf(playerTotal) + 1;
+            const rankEmojis = ['🥇', '🥈', '🥉'];
+            if (playerRankEmoji) playerRankEmoji.textContent = rankEmojis[playerRank - 1] || '📊';
+            
+            rivalsList.innerHTML = gameState.rivals.map((rival, idx) => {
+                if (!rival.alive) return '<div style="padding: 10px; color: #999; font-style: italic;">💀 ' + rival.name + ' (Collapsed)</div>';
+                const total = rival.stability + rival.innovation + rival.culture + rival.economy;
+                const powerPercent = (total / 400) * 100;
+                
+                const rank = sorted.indexOf(total) + 1;
+                const rankEmoji = rankEmojis[rank - 1] || '📊';
+                
+                const relationIcon = rival.relationship === 'ally' ? '🤝' : rival.relationship === 'war' ? '⚔️' : '🤷';
+                
+                return `
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid ${rival.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div>
+                                <span style="font-size: 1.2em;">${rival.emoji}</span>
+                                <strong>${rival.name}</strong>
+                                <span style="margin-left: 8px;">${relationIcon}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 1.3em;">${rankEmoji}</span>
+                                <div style="font-size: 0.9em; color: #999;">Power: ${Math.round(total)}</div>
+                            </div>
+                        </div>
+                        <div style="background: #e0e0e0; border-radius: 4px; height: 8px; overflow: hidden;">
+                            <div style="width: ${powerPercent}%; background: ${rival.color}; height: 100%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function rivalTurn(rival) {
+            if (!rival || !rival.alive) return;
+            
+            const stats = ['stability', 'innovation', 'culture', 'economy'];
+            const changes = [];
+            
+            // Smarter AI: prioritize weakest stats
+            stats.forEach(stat => {
+                const value = rival[stat];
+                let change;
+                
+                if (value < 25) {
+                    // Critical - strong recovery attempt
+                    change = 4 + Math.random() * 6;
+                } else if (value < 40) {
+                    // Low - moderate recovery
+                    change = 2 + Math.random() * 4;
+                } else if (value > 70) {
+                    // High - risky moves
+                    change = (Math.random() - 0.5) * 10;
+                } else {
+                    // Balanced - slight improvements
+                    change = (Math.random() - 0.3) * 6;
+                }
+                
+                // Personality affects behavior
+                if (rival.personality === 'aggressive') {
+                    change = change * 1.3; // More volatile
+                } else {
+                    change = change * 0.8; // More conservative
+                }
+                
+                changes.push(change);
+            });
+            
+            stats.forEach((stat, idx) => {
+                if (rival[stat] !== undefined) {
+                    rival[stat] = Math.max(0, Math.min(100, rival[stat] + changes[idx]));
+                }
+            });
+            
+            // Check for rival collapse
+            if (rival.stability <= 0 || rival.economy <= 0) {
+                rival.alive = false;
+                showMessage(`💀 ${rival.name} has collapsed!`, 'info');
+            }
+        }
+
+        function checkDiplomaticPhase() {
+            return gameState.turn > 0 && gameState.turn % 3 === 0;
+        }
+
+        function showDiplomaticPhase() {
+            const modal = document.getElementById('diplomaticModal');
+            const choicesDiv = document.getElementById('diplomaticChoices');
+            
+            modal.classList.add('show');
+            
+            const aliveRivals = gameState.rivals.filter(r => r.alive);
+            if (aliveRivals.length === 0) {
+                modal.classList.remove('show');
+                return;
+            }
+            
+            const isDark = document.body.classList.contains('dark-mode');
+            const bgColor = isDark ? '#1a1a2e' : '#f5f5f5';
+            const textColor = isDark ? '#e0e0e0' : '#333';
+            
+            choicesDiv.innerHTML = aliveRivals.map((rival, idx) => {
+                // Get the actual index in the full rivals array
+                const realIdx = gameState.rivals.indexOf(rival);
+                return `
+                <div style="background: ${bgColor}; padding: 15px; border-radius: 8px; border-left: 4px solid ${rival.color}; margin-bottom: 15px;">
+                    <h4 style="color: ${textColor}; margin-bottom: 10px;">${rival.emoji} ${rival.name} - ${rival.relationship.toUpperCase()}</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                        <button onclick="diplomaticAction(${realIdx}, 'trade')" class="choice-btn" style="padding: 10px; font-size: 0.9em; background: #667eea; color: white; border: none; cursor: pointer; border-radius: 4px;">🤝 Trade Deal<br><small>+10 Econ both</small></button>
+                        <button onclick="diplomaticAction(${realIdx}, 'culture')" class="choice-btn" style="padding: 10px; font-size: 0.9em; background: #667eea; color: white; border: none; cursor: pointer; border-radius: 4px;">🎭 Cultural Exchange<br><small>+10 Culture both</small></button>
+                        <button onclick="diplomaticAction(${realIdx}, 'ally')" class="choice-btn" style="padding: 10px; font-size: 0.9em; background: #51cf66; color: white; border: none; cursor: pointer; border-radius: 4px;">🤝 Form Alliance<br><small>Mutual protection</small></button>
+                        <button onclick="diplomaticAction(${realIdx}, 'war')" class="choice-btn" style="padding: 10px; font-size: 0.9em; background: #ff6b6b; color: white; border: none; cursor: pointer; border-radius: 4px;">⚔️ Declare War<br><small>High risk/reward</small></button>
+                    </div>
+                </div>
+            `}).join('') + `
+                <button onclick="closeDiplomaticPhase()" class="btn" style="margin-top: 15px; width: 100%;">Continue Without Action</button>
+            `;
+        }
+
+        function diplomaticAction(rivalIdx, action) {
+            const rival = gameState.rivals[rivalIdx];
+            if (!rival || !rival.alive) return;
+            
+            switch(action) {
+                case 'trade':
+                    gameState.economy = Math.min(100, gameState.economy + 10);
+                    rival.economy = Math.min(100, rival.economy + 10);
+                    rival.relationship = 'ally';
+                    showMessage(`📦 Trade agreement with ${rival.name}!`, 'success');
+                    break;
+                    
+                case 'culture':
+                    gameState.culture = Math.min(100, gameState.culture + 10);
+                    rival.culture = Math.min(100, rival.culture + 10);
+                    rival.relationship = 'ally';
+                    showMessage(`🎭 Cultural exchange with ${rival.name}!`, 'success');
+                    break;
+                    
+                case 'ally':
+                    rival.relationship = 'ally';
+                    gameState.stability = Math.min(100, gameState.stability + 5);
+                    showMessage(`🤝 Alliance formed with ${rival.name}!`, 'success');
+                    break;
+                    
+                case 'war':
+                    rival.relationship = 'war';
+                    gameState.warWith.push(rivalIdx);
+                    const playerPower = gameState.stability + gameState.innovation + gameState.economy;
+                    const rivalPower = rival.stability + rival.innovation + rival.economy;
+                    
+                    if (playerPower > rivalPower * 1.2) {
+                        // Victory
+                        gameState.stability = Math.max(0, gameState.stability - 10);
+                        gameState.economy += 15;
+                        gameState.prestige += 5;
+                        rival.alive = false;
+                        showMessage(`⚔️ Victory over ${rival.name}! +15 Economy, +5 Prestige`, 'success');
+                    } else if (playerPower > rivalPower) {
+                        // Narrow victory
+                        gameState.stability = Math.max(0, gameState.stability - 15);
+                        gameState.economy += 5;
+                        rival.stability = Math.max(0, rival.stability - 20);
+                        showMessage(`⚔️ Costly victory over ${rival.name}`, 'info');
+                    } else {
+                        // Defeat
+                        gameState.stability = Math.max(0, gameState.stability - 25);
+                        gameState.economy = Math.max(0, gameState.economy - 20);
+                        showMessage(`💀 Defeated by ${rival.name}! Heavy losses!`, 'error');
+                    }
+                    break;
+            }
+            
+            updateStats();
+            updateRivalsDisplay();
+            
+            // Set flag and close modal
+            gameState.diplomaticActionTaken = true;
+            closeDiplomaticPhase();
+            setTimeout(() => displayEvent(), 500);
+        }
+
+        function closeDiplomaticPhase() {
+            document.getElementById('diplomaticModal').classList.remove('show');
+            gameState.diplomaticPhase = false;
+            // displayEvent will be called by either diplomaticAction or manually if no action taken
+            // If closing without action, advance the game
+            if (!gameState.diplomaticActionTaken) {
+                setTimeout(() => displayEvent(), 500);
+            }
+            gameState.diplomaticActionTaken = false; // Reset flag
+        }
+
+        function useLeaderAction() {
+            if (gameState.leaderActionUsed) {
+                showMessage('Leader action already used!', 'error');
+                return;
+            }
+            
+            const leader = leaders[gameState.leader];
+            gameState.leaderActionUsed = true;
+            document.getElementById('leaderActionBtn').disabled = true;
+            document.getElementById('leaderActionBtn').style.opacity = '0.5';
+            document.getElementById('leaderActionBtn').textContent = '✓ Used';
+            
+            switch(gameState.leader) {
+                case 'conqueror':
+                    // Declare war with bonus
+                    const target = gameState.rivals.find(r => r.alive);
+                    if (target) {
+                        target.alive = false;
+                        gameState.stability += 15;
+                        gameState.innovation += 15;
+                        gameState.culture += 15;
+                        gameState.economy += 15;
+                        showMessage(`⚔️ Conquered ${target.name}! +15 to all stats!`, 'success');
+                    }
+                    break;
+                    
+                case 'scholar':
+                    gameState.innovation += 20;
+                    gameState.culture += 10;
+                    showMessage('💡 Eureka Moment! +20 Innovation, +10 Culture', 'success');
+                    break;
+                    
+                case 'diplomat':
+                    gameState.rivals.forEach(r => r.relationship = 'ally');
+                    gameState.warWith = [];
+                    gameState.stability += 10;
+                    gameState.culture += 10;
+                    gameState.economy += 10;
+                    gameState.innovation += 10;
+                    showMessage('🕊️ Peace Summit! All rivals now allies! +10 to all stats', 'success');
+                    break;
+                    
+                case 'merchant':
+                    gameState.economy += 30;
+                    gameState.prestige += 10;
+                    showMessage('💰 Golden Age! +30 Economy, +10 Prestige', 'success');
+                    break;
+                    
+                case 'revolutionary':
+                    gameState.stability = 50;
+                    gameState.innovation = 50;
+                    gameState.culture = 50;
+                    gameState.economy = 50;
+                    gameState.prestige += 20;
+                    showMessage('🔥 Revolution! All stats reset to 50, +20 Prestige', 'success');
+                    break;
+            }
+            
+            updateStats();
+            updateRivalsDisplay();
+        }
+
+        function applyLeaderPassive() {
+            if (!gameState.leader || !leaders[gameState.leader]) return;
+            
+            const leader = leaders[gameState.leader];
+            
+            // Apply bonuses
+            if (leader.bonuses) {
+                Object.entries(leader.bonuses).forEach(([stat, value]) => {
+                    if (gameState[stat] !== undefined) {
+                        gameState[stat] = Math.min(100, gameState[stat] + value);
+                    }
+                });
+            }
+            
+            // Apply penalties
+            if (leader.penalties) {
+                Object.entries(leader.penalties).forEach(([stat, value]) => {
+                    if (gameState[stat] !== undefined) {
+                        gameState[stat] = Math.max(0, gameState[stat] + value);
+                    }
+                });
+            }
+        }
+
+        function showMessage(text, type) {
+            const apiStatus = document.getElementById('apiStatus');
+            apiStatus.textContent = text;
+            apiStatus.style.background = type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1';
+            apiStatus.style.color = type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460';
+            
+            setTimeout(() => {
+                apiStatus.style.background = '';
+                apiStatus.style.color = '';
+            }, 3000);
+        }
+
         function startGame(difficulty = 'normal') {
+            if (!selectedLeader) {
+                alert('⚠️ Please select a leader first!');
+                document.getElementById('difficultySelection').style.display = 'none';
+                document.getElementById('leaderSelection').style.display = 'block';
+                return;
+            }
+            
             const startValues = {
                 normal: 50,
                 hard: 40,
@@ -711,14 +1344,73 @@
             };
             
             const start = startValues[difficulty] || 50;
+            
+            // Reset entire game state
+            gameState.turn = 0;
             gameState.difficulty = difficulty;
+            gameState.leader = selectedLeader;
+            gameState.leaderActionUsed = false;
+            gameState.warWith = [];
+            gameState.gameOver = false;
+            gameState.prestige = 0;
+            gameState.momentum = 0;
+            gameState.decisions = [];
+            gameState.eventMemory = [];
+            gameState.diplomaticPhase = false;
+            gameState.diplomaticActionTaken = false;
             gameState.stability = start;
             gameState.innovation = start;
             gameState.culture = start;
             gameState.economy = start;
             
+            // Apply leader starting bonuses
+            const leader = leaders[selectedLeader];
+            Object.entries(leader.startBonus).forEach(([stat, value]) => {
+                if (gameState[stat] !== undefined) {
+                    gameState[stat] = Math.min(100, gameState[stat] + value);
+                }
+            });
+            
+            // Initialize rivals
+            initializeRivals();
+            
             document.getElementById('introModal').style.display = 'none';
+            
+            // Show leader display
+            const leaderDisplay = document.getElementById('leaderDisplay');
+            if (leaderDisplay) {
+                leaderDisplay.style.display = 'block';
+                document.getElementById('leaderEmoji').textContent = leader.emoji;
+                document.getElementById('leaderName').textContent = leader.name;
+                
+                // Show both bonuses and penalties
+                const effects = [];
+                Object.entries(leader.bonuses).forEach(([stat, val]) => {
+                    effects.push(`+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}`);
+                });
+                Object.entries(leader.penalties).forEach(([stat, val]) => {
+                    effects.push(`${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}`);
+                });
+                
+                document.getElementById('leaderBonus').textContent = effects.length > 0 ? effects.join(', ') : 'Balanced';
+            }
+            
+            // Show rivals display
+            const rivalsDisplay = document.getElementById('rivalsDisplay');
+            if (rivalsDisplay) {
+                rivalsDisplay.style.display = 'block';
+            }
+            
             updateStats();
+            updateRivalsDisplay();
+            
+            // Show leader action button
+            const leaderActionBtn = document.getElementById('leaderActionBtn');
+            if (leaderActionBtn) {
+                leaderActionBtn.style.display = 'block';
+                leaderActionBtn.textContent = `⚡ ${leader.emoji} ${leader.special.split('(')[0]}`;
+            }
+            
             displayEvent();
         }
 
@@ -1231,6 +1923,12 @@
         function makeChoice(choice, isRandomEvent = false) {
             gameState.turn++;
             
+            // Apply leader passive bonuses
+            applyLeaderPassive();
+            
+            // Rivals take their turns
+            gameState.rivals.forEach(rival => rivalTurn(rival));
+            
             // Apply prestige effects
             let modifiedEffects = { ...choice.effects };
             
@@ -1323,9 +2021,18 @@
             consequencesDiv.style.display = 'block';
 
             updateHistoryTimeline();
+            updateRivalsDisplay();
             
             if (gameState.turn < gameState.maxTurns) {
-                setTimeout(() => displayEvent(), 4000);
+                // Check for diplomatic phase
+                if (checkDiplomaticPhase()) {
+                    setTimeout(() => {
+                        showDiplomaticPhase();
+                        // Don't auto-advance - wait for user action
+                    }, 3000);
+                } else {
+                    setTimeout(() => displayEvent(), 4000);
+                }
             } else {
                 setTimeout(() => endGame(true), 3000);
             }
@@ -1366,6 +2073,14 @@
             const total = stability + innovation + culture + economy;
             const dominant = Math.max(stability, innovation, culture, economy);
             const weakest = Math.min(stability, innovation, culture, economy);
+            
+            // Check if player is strongest
+            const aliveRivals = gameState.rivals.filter(r => r.alive);
+            const rivalScores = aliveRivals.map(r => r.stability + r.innovation + r.culture + r.economy);
+            const isStrongest = rivalScores.length === 0 || rivalScores.every(score => total >= score);
+            const ranking = [total, ...rivalScores].sort((a, b) => b - a).indexOf(total) + 1;
+            const rankEmoji = ranking === 1 ? '🥇' : ranking === 2 ? '🥈' : '🥉';
+            const rankText = isStrongest ? ' - SUPREME LEADER' : ` - Rank ${rankEmoji}`;
             
             let futureTitle = '';
             let futureDesc = '';
@@ -1428,8 +2143,8 @@
                 rating = 'C+ TIER VICTORY';
             }
             
-            eventTitle.textContent = `🎊 ${futureTitle}`;
-            eventDesc.textContent = futureDesc;
+            eventTitle.textContent = `🎊 ${futureTitle}${rankText}`;
+            eventDesc.textContent = futureDesc + `\n\nYou ranked ${rankEmoji} among ${aliveRivals.length + 1} civilizations.`;
             
             let bonusAchievements = '';
             if (prestige >= 20) bonusAchievements += '🏆 HIGH PRESTIGE MASTER<br>';

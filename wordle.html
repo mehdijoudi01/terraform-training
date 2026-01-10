@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Wordle Game</title>
     <style>
         * {
@@ -15,11 +15,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             transition: background 0.3s ease;
+            overflow: auto;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
         }
 
         body.dark-mode {
@@ -771,6 +777,14 @@
         function handleMobileKeydown(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
+                // Process any pending input first
+                if (mobileInput && mobileInput.value) {
+                    const value = mobileInput.value.toUpperCase().replace(/[^A-Z]/g, '');
+                    for (const char of value) {
+                        addLetter(char);
+                    }
+                    mobileInput.value = '';
+                }
                 submitGuess();
                 if (mobileInput) mobileInput.blur();
             }
@@ -903,7 +917,7 @@
         }
 
         function initializeKeyboard() {
-            const keys = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
+            const keys = 'AZERTYUIOPQSDFGHJKLMWXCVBN'.split('');
             keyboard.innerHTML = '';
             
             keys.forEach(key => {
@@ -1043,10 +1057,12 @@
                 const letter = guessLetters[i];
                 const keyButton = document.getElementById(`key-${letter}`);
                 if (result[i] === 'correct') {
+                    keyButton.classList.remove('present', 'absent');
                     keyButton.classList.add('correct');
-                } else if (result[i] === 'present') {
+                } else if (result[i] === 'present' && !keyButton.classList.contains('correct')) {
+                    keyButton.classList.remove('absent');
                     keyButton.classList.add('present');
-                } else {
+                } else if (!keyButton.classList.contains('correct') && !keyButton.classList.contains('present')) {
                     keyButton.classList.add('absent');
                 }
             }
@@ -1104,7 +1120,6 @@
                 event.preventDefault();
                 deleteLetter();
             } else if (event.key === 'Enter') {
-                event.preventDefault();
                 submitGuess();
             }
         }
