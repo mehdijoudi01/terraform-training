@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Riddle Chronicles - Choice Chronicles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            min-height: 100vh;
+            padding: clamp(10px, 3vw, 20px);
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #6b1f16 0%, #4a150f 100%);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: clamp(8px, 2vw, 10px);
+        }
+
+        .back-btn, .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: clamp(40px, 8vw, 45px);
+            height: clamp(40px, 8vw, 45px);
+            cursor: pointer;
+            font-size: clamp(1em, 2.5vw, 1.2em);
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover, .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        body.dark-mode .container {
+            background: #2a0f0b;
+        }
+
+        .game-content {
+            padding: clamp(20px, 4vw, 40px);
+            min-height: 600px;
+        }
+
+        .title {
+            color: #c0392b;
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            margin-bottom: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .title {
+            color: #e74c3c;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: clamp(0.9em, 2vw, 1.1em);
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
+            gap: clamp(10px, 2vw, 15px);
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #ffebee;
+            padding: clamp(12px, 2vw, 15px);
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #c0392b;
+        }
+
+        body.dark-mode .stat-box {
+            background: #2a0f0b;
+        }
+
+        .stat-value {
+            color: #c0392b;
+            font-size: clamp(1.3em, 3vw, 1.8em);
+            font-weight: bold;
+        }
+
+        body.dark-mode .stat-value {
+            color: #e74c3c;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: clamp(0.8em, 1.8vw, 0.9em);
+            margin-top: 5px;
+        }
+
+        .riddle-display {
+            background: linear-gradient(135deg, #ffe5e5 0%, #ffd5d5 100%);
+            padding: clamp(25px, 4vw, 35px);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 3px solid #c0392b;
+            min-height: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .riddle-display {
+            background: linear-gradient(135deg, #3a1a16 0%, #2a0f0b 100%);
+            border-color: #e74c3c;
+        }
+
+        .riddle-number {
+            color: #c0392b;
+            font-size: clamp(1em, 2vw, 1.2em);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .riddle-number {
+            color: #e74c3c;
+        }
+
+        .riddle-text {
+            color: #555;
+            font-size: clamp(1.1em, 2.5vw, 1.3em);
+            line-height: 1.8;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .riddle-text {
+            color: #bdc3c7;
+        }
+
+        .hint-section {
+            background: rgba(192, 57, 43, 0.1);
+            padding: clamp(12px, 2vw, 15px);
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hint-section:hover {
+            background: rgba(192, 57, 43, 0.15);
+        }
+
+        .hint-title {
+            color: #c0392b;
+            font-weight: bold;
+            font-size: clamp(0.9em, 2vw, 1em);
+            margin-bottom: 8px;
+        }
+
+        .hint-text {
+            color: #666;
+            font-size: clamp(0.85em, 1.8vw, 0.9em);
+            display: none;
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .hint-text {
+            color: #95a5a6;
+        }
+
+        .hint-section.revealed .hint-text {
+            display: block;
+        }
+
+        .answer-section {
+            margin-bottom: 30px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: clamp(12px, 2vw, 15px);
+            font-size: clamp(1em, 2vw, 1.1em);
+            border: 3px solid #ecf0f1;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .answer-input {
+            background: #2a0f0b;
+            color: #e0e0e0;
+            border-color: #4a150f;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #c0392b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: min(150px, 100%);
+            padding: clamp(12px, 2vw, 15px);
+            background: #c0392b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.9em, 2vw, 1em);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #a93226;
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #95a5a6;
+        }
+
+        .btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        body.dark-mode .progress-bar {
+            background: #2a0f0b;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #c0392b, #e74c3c);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: clamp(25px, 4vw, 40px);
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .modal-content {
+            background: #2a0f0b;
+            color: #e0e0e0;
+        }
+
+        .modal-content h2 {
+            color: #c0392b;
+            margin-bottom: 20px;
+            font-size: clamp(1.5em, 3.5vw, 2em);
+        }
+
+        body.dark-mode .modal-content h2 {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="game-content">
+            <h1 class="title">❓ Riddle Chronicles</h1>
+            <p class="subtitle">Solve riddles to unlock the story</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="currentRiddle">1</div>
+                    <div class="stat-label">Chapter</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="solvedCount">0</div>
+                    <div class="stat-label">Solved</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="hintsUsed">0</div>
+                    <div class="stat-label">Hints</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">Score</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 10%">10%</div>
+            </div>
+
+            <div class="riddle-display">
+                <div class="riddle-number" id="riddleNumber">Chapter 1: The Beginning</div>
+                <div class="riddle-text" id="riddleText">Loading riddle...</div>
+                
+                <div class="hint-section" id="hintSection" onclick="revealHint()">
+                    <div class="hint-title">💡 Need a hint? Click here (-10 points)</div>
+                    <div class="hint-text" id="hintText"></div>
+                </div>
+            </div>
+
+            <div class="answer-section">
+                <input 
+                    type="text" 
+                    class="answer-input" 
+                    id="answerInput" 
+                    placeholder="Type your answer here..."
+                    onkeypress="if(event.key === 'Enter') checkAnswer()"
+                >
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="checkAnswer()">✓ Submit Answer</button>
+                <button class="btn secondary" onclick="skipRiddle()">⏭️ Skip (-20 points)</button>
+                <button class="btn secondary" onclick="newGame()">🔄 Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <h2 id="resultTitle">Result</h2>
+            <p id="resultMessage" style="margin-bottom: 20px; line-height: 1.8;"></p>
+            <button class="btn" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('riddle-dark-mode', isDark);
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('riddle-dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Riddles database - loaded from JSON
+        let riddles = [];
+        let allRiddlesData = null;
+
+        // Load riddles from JSON
+        async function loadRiddlesData() {
+            try {
+                const response = await fetch('riddle-data.json');
+                allRiddlesData = await response.json();
+                console.log(`Loaded ${allRiddlesData.total_riddles} riddles from database`);
+                
+                // Convert to game format with chapters
+                riddles = allRiddlesData.riddles.slice(0, 100).map((riddle, index) => ({
+                    chapter: `Chapter ${index + 1}: ${riddle.category}`,
+                    riddle: riddle.riddle,
+                    answer: riddle.answer,
+                    hint: riddle.hint,
+                    story: `You encounter a ${riddle.difficulty.toLowerCase()} challenge. ${riddle.riddle}`,
+                    difficulty: riddle.difficulty,
+                    category: riddle.category
+                }));
+                
+                return true;
+            } catch (error) {
+                console.error('Failed to load riddles data:', error);
+                // Fallback to legacy riddles
+                riddles = legacyRiddles;
+                return false;
+            }
+        }
+
+        // Legacy riddles (fallback)
+        const legacyRiddles = [
+            {
+                chapter: "Chapter 1: The Beginning",
+                riddle: "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
+                answer: "echo",
+                hint: "Think about sounds bouncing back to you in empty spaces.",
+                story: "The journey begins in an ancient cave. Your voice echoes as you venture deeper, each sound revealing hidden paths."
+            },
+            {
+                chapter: "Chapter 2: The Guardian",
+                riddle: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
+                answer: "map",
+                hint: "You use this to navigate, but it's flat and paper-thin.",
+                story: "A mysterious map appears on the cave wall, glowing with ancient runes. It shows the way forward."
+            },
+            {
+                chapter: "Chapter 3: The Trial",
+                riddle: "The more of this there is, the less you see. What is it?",
+                answer: "darkness",
+                hint: "Without light, this fills everything around you.",
+                story: "The path grows darker. You must navigate by memory and intuition alone."
+            },
+            {
+                chapter: "Chapter 4: The Keeper",
+                riddle: "I can be cracked, made, told, and played. What am I?",
+                answer: "joke",
+                hint: "Something that makes people laugh.",
+                story: "A ancient guardian blocks your path, demanding entertainment before allowing passage."
+            },
+            {
+                chapter: "Chapter 5: The Light",
+                riddle: "What has hands but cannot clap?",
+                answer: "clock",
+                hint: "You check this to see if you're late.",
+                story: "Time seems to stand still. An ancient timepiece marks the hours of your quest."
+            },
+            {
+                chapter: "Chapter 6: The Mirror",
+                riddle: "What can travel around the world while staying in a corner?",
+                answer: "stamp",
+                hint: "It's small, sticky, and helps letters reach distant lands.",
+                story: "Messages from the past guide you forward. Each one a piece of the puzzle."
+            },
+            {
+                chapter: "Chapter 7: The Crossing",
+                riddle: "I have a head and a tail, but no body. What am I?",
+                answer: "coin",
+                hint: "You flip it to make decisions.",
+                story: "A choice must be made. Two paths diverge, and only chance can decide your fate."
+            },
+            {
+                chapter: "Chapter 8: The Storm",
+                riddle: "I run, but I have no legs. What am I?",
+                answer: "water",
+                hint: "Rivers do this constantly.",
+                story: "A raging torrent blocks your path. You must understand its nature to cross safely."
+            },
+            {
+                chapter: "Chapter 9: The Secret",
+                riddle: "What has many keys but can't open a single lock?",
+                answer: "piano",
+                hint: "Musicians play this beautiful instrument.",
+                story: "Harmony and discord. Music reveals the final secret of the ancient chamber."
+            },
+            {
+                chapter: "Chapter 10: The End",
+                riddle: "What begins with an E, ends with an E, but only contains one letter?",
+                answer: "envelope",
+                hint: "You put letters inside this before mailing them.",
+                story: "The final message awaits. Your journey has come full circle. The treasure was the wisdom gained along the way."
+            }
+        ];
+
+        // Game state
+        let gameState = {
+            currentRiddle: 0,
+            solvedCount: 0,
+            hintsUsed: 0,
+            score: 100,
+            hintRevealed: false
+        };
+
+        // Initialize
+        async function init() {
+            // Show loading
+            const riddleText = document.getElementById('riddleText');
+            if (riddleText) riddleText.textContent = 'Loading riddles...';
+            
+            // Load riddles
+            await loadRiddlesData();
+            
+            loadGame();
+            loadRiddle();
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('riddle-chronicles-state');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+
+        function saveGame() {
+            localStorage.setItem('riddle-chronicles-state', JSON.stringify(gameState));
+        }
+
+        function updateDisplay() {
+            document.getElementById('currentRiddle').textContent = gameState.currentRiddle + 1;
+            document.getElementById('solvedCount').textContent = gameState.solvedCount;
+            document.getElementById('hintsUsed').textContent = gameState.hintsUsed;
+            document.getElementById('score').textContent = gameState.score;
+            
+            const progress = ((gameState.currentRiddle + 1) / riddles.length) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function loadRiddle() {
+            if (gameState.currentRiddle >= riddles.length) {
+                showCompletion();
+                return;
+            }
+            
+            const riddle = riddles[gameState.currentRiddle];
+            document.getElementById('riddleNumber').textContent = riddle.chapter;
+            document.getElementById('riddleText').textContent = riddle.riddle;
+            document.getElementById('hintText').textContent = riddle.hint;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            
+            // Reset hint
+            gameState.hintRevealed = false;
+            document.getElementById('hintSection').classList.remove('revealed');
+            
+            updateDisplay();
+        }
+
+        function revealHint() {
+            if (!gameState.hintRevealed) {
+                gameState.hintRevealed = true;
+                gameState.hintsUsed++;
+                gameState.score = Math.max(0, gameState.score - 10);
+                document.getElementById('hintSection').classList.add('revealed');
+                updateDisplay();
+                saveGame();
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase();
+            const correctAnswer = riddles[gameState.currentRiddle].answer.toLowerCase();
+            
+            if (!userAnswer) {
+                alert('Please enter an answer!');
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                // Correct answer
+                gameState.solvedCount++;
+                gameState.score += 50;
+                
+                const modal = document.getElementById('resultModal');
+                const title = document.getElementById('resultTitle');
+                const message = document.getElementById('resultMessage');
+                
+                title.textContent = '✅ Correct!';
+                title.style.color = '#27ae60';
+                
+                message.innerHTML = `
+                    <strong>Well done!</strong><br><br>
+                    ${riddles[gameState.currentRiddle].story}<br><br>
+                    <em>+50 points</em>
+                `;
+                
+                modal.classList.add('show');
+                
+                gameState.currentRiddle++;
+                saveGame();
+            } else {
+                // Wrong answer
+                const modal = document.getElementById('resultModal');
+                const title = document.getElementById('resultTitle');
+                const message = document.getElementById('resultMessage');
+                
+                title.textContent = '❌ Incorrect';
+                title.style.color = '#e74c3c';
+                
+                message.innerHTML = `
+                    <strong>Not quite right!</strong><br><br>
+                    Keep thinking... or try the hint!<br><br>
+                    <em>Try again!</em>
+                `;
+                
+                modal.classList.add('show');
+            }
+        }
+
+        function skipRiddle() {
+            if (confirm('Skip this riddle? (-20 points)')) {
+                gameState.score = Math.max(0, gameState.score - 20);
+                gameState.currentRiddle++;
+                saveGame();
+                
+                if (gameState.currentRiddle < riddles.length) {
+                    loadRiddle();
+                } else {
+                    showCompletion();
+                }
+            }
+        }
+
+        function showCompletion() {
+            const modal = document.getElementById('resultModal');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+            
+            title.textContent = '🏆 Quest Complete!';
+            title.style.color = '#f39c12';
+            
+            message.innerHTML = `
+                <strong>Congratulations!</strong><br><br>
+                You've completed the Riddle Chronicles!<br><br>
+                <strong>Final Stats:</strong><br>
+                Riddles Solved: ${gameState.solvedCount}/${riddles.length}<br>
+                Hints Used: ${gameState.hintsUsed}<br>
+                Final Score: ${gameState.score}<br><br>
+                <em>The journey ends, but your wisdom remains.</em>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.remove('show');
+            if (gameState.currentRiddle < riddles.length) {
+                loadRiddle();
+            }
+        }
+
+        function newGame() {
+            if (confirm('Start a new adventure? Current progress will be lost.')) {
+                gameState = {
+                    currentRiddle: 0,
+                    solvedCount: 0,
+                    hintsUsed: 0,
+                    score: 100,
+                    hintRevealed: false
+                };
+                saveGame();
+                loadRiddle();
+            }
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

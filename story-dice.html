@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Story Dice - Choice Chronicles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            min-height: 100vh;
+            padding: clamp(10px, 3vw, 20px);
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #8b5a00 0%, #663d00 100%);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: clamp(8px, 2vw, 10px);
+        }
+
+        .back-btn, .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: clamp(40px, 8vw, 45px);
+            height: clamp(40px, 8vw, 45px);
+            cursor: pointer;
+            font-size: clamp(1em, 2.5vw, 1.2em);
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover, .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        body.dark-mode .container {
+            background: #2c1f0f;
+        }
+
+        .game-content {
+            padding: clamp(20px, 4vw, 40px);
+            min-height: 600px;
+        }
+
+        .title {
+            color: #f39c12;
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            margin-bottom: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .title {
+            color: #f39c12;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: clamp(0.9em, 2vw, 1.1em);
+            margin-bottom: 30px;
+        }
+
+        body.dark-mode .subtitle {
+            color: #95a5a6;
+        }
+
+        .dice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+            gap: clamp(15px, 3vw, 20px);
+            margin-bottom: 30px;
+        }
+
+        .dice-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(3em, 8vw, 4em);
+            border: 3px solid #f39c12;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .dice-card {
+            background: linear-gradient(135deg, #3a2f16 0%, #2c1f0f 100%);
+            border-color: #f39c12;
+        }
+
+        .dice-card:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+        }
+
+        .dice-card.rolling {
+            animation: roll 0.5s ease-in-out;
+        }
+
+        @keyframes roll {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
+        }
+
+        .dice-label {
+            position: absolute;
+            bottom: 5px;
+            font-size: clamp(0.7em, 1.5vw, 0.8em);
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .dice-emoji {
+            font-size: 4em;
+        }
+
+        .story-area {
+            background: #fff9e6;
+            padding: clamp(20px, 4vw, 30px);
+            border-radius: 12px;
+            min-height: 200px;
+            margin-bottom: 30px;
+            border: 3px dashed #f39c12;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .story-area {
+            background: #2c1f0f;
+            border-color: #f39c12;
+        }
+
+        .story-textarea {
+            width: 100%;
+            min-height: 150px;
+            border: none;
+            background: transparent;
+            color: #555;
+            font-size: clamp(0.95em, 2vw, 1.05em);
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            resize: vertical;
+            outline: none;
+            padding: 0;
+        }
+
+        body.dark-mode .story-textarea {
+            color: #d4a76a;
+        }
+
+        .story-textarea::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .word-count {
+            text-align: right;
+            color: #95a5a6;
+            font-size: clamp(0.8em, 1.8vw, 0.9em);
+            margin-top: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: min(150px, 100%);
+            padding: clamp(12px, 2vw, 15px);
+            background: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.9em, 2vw, 1em);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #95a5a6;
+        }
+
+        .btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .community-stories {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: clamp(1.2em, 2.5vw, 1.5em);
+            color: #f39c12;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 10px;
+        }
+
+        body.dark-mode .section-title {
+            color: #f39c12;
+        }
+
+        .story-card {
+            background: white;
+            padding: clamp(15px, 3vw, 20px);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f39c12;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .story-card {
+            background: #2c1f0f;
+        }
+
+        .story-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .story-card-author {
+            font-weight: bold;
+            color: #f39c12;
+            font-size: clamp(0.9em, 2vw, 1em);
+        }
+
+        .story-card-date {
+            color: #95a5a6;
+            font-size: clamp(0.8em, 1.8vw, 0.85em);
+        }
+
+        .story-card-text {
+            color: #555;
+            line-height: 1.6;
+            font-family: 'Georgia', serif;
+            font-size: clamp(0.9em, 2vw, 0.95em);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .story-card-text {
+            color: #d4a76a;
+        }
+
+        .story-card-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: clamp(0.8em, 1.8vw, 0.9em);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
+            gap: clamp(10px, 2vw, 15px);
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #fff9e6;
+            padding: clamp(12px, 2vw, 15px);
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #f39c12;
+        }
+
+        body.dark-mode .stat-box {
+            background: #2c1f0f;
+        }
+
+        .stat-value {
+            color: #f39c12;
+            font-size: clamp(1.3em, 3vw, 1.8em);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: clamp(0.8em, 1.8vw, 0.9em);
+            margin-top: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .dice-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-content {
+                padding: 20px;
+            }
+
+            .dice-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="game-content">
+            <h1 class="title">🎲 Story Dice</h1>
+            <p class="subtitle">Roll the dice and weave your tale</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="storiesWritten">0</div>
+                    <div class="stat-label">Stories</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalWords">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="currentStreak">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">🎲 Your Story Elements</h3>
+            <div class="dice-grid" id="diceGrid"></div>
+
+            <h3 class="section-title">📝 Write Your Story</h3>
+            <div class="story-area">
+                <textarea 
+                    class="story-textarea" 
+                    id="storyText" 
+                    placeholder="Use the rolled elements to craft your story... Be creative!"
+                    maxlength="2000"
+                ></textarea>
+                <div class="word-count" id="wordCount">0 / 500 words</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="rollDice()">🎲 Roll New Dice</button>
+                <button class="btn secondary" onclick="clearStory()">🗑️ Clear Story</button>
+                <button class="btn" id="saveBtn" onclick="saveStory()" disabled>💾 Save Story</button>
+            </div>
+
+            <div class="community-stories">
+                <h3 class="section-title">📚 Your Saved Stories</h3>
+                <div id="savedStories"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('story-dark-mode', isDark);
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('story-dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Story elements pool with Unsplash categories
+        const storyElements = {
+            characters: [
+                { emoji: '👨‍🚀', category: 'astronaut' },
+                { emoji: '👸', category: 'princess' },
+                { emoji: '🧙‍♂️', category: 'wizard' },
+                { emoji: '🦸‍♀️', category: 'superhero' },
+                { emoji: '🤖', category: 'robot' },
+                { emoji: '👽', category: 'alien' },
+                { emoji: '🧛‍♂️', category: 'vampire' },
+                { emoji: '🧚‍♀️', category: 'fairy' },
+                { emoji: '🐉', category: 'dragon' },
+                { emoji: '🦁', category: 'lion' },
+                { emoji: '🐺', category: 'wolf' },
+                { emoji: '🦉', category: 'owl' }
+            ],
+            objects: [
+                { emoji: '🗝️', category: 'key' },
+                { emoji: '💎', category: 'diamond' },
+                { emoji: '📜', category: 'scroll' },
+                { emoji: '⚔️', category: 'sword' },
+                { emoji: '🏆', category: 'trophy' },
+                { emoji: '📱', category: 'phone' },
+                { emoji: '🚀', category: 'rocket' },
+                { emoji: '🎭', category: 'mask' },
+                { emoji: '🎸', category: 'guitar' },
+                { emoji: '🔮', category: 'crystal ball' },
+                { emoji: '📖', category: 'book' },
+                { emoji: '💍', category: 'ring' }
+            ],
+            places: [
+                { emoji: '🏰', category: 'castle' },
+                { emoji: '🏔️', category: 'mountain' },
+                { emoji: '🏝️', category: 'island' },
+                { emoji: '🌋', category: 'volcano' },
+                { emoji: '🏙️', category: 'city' },
+                { emoji: '🛸', category: 'ufo' },
+                { emoji: '🏛️', category: 'temple' },
+                { emoji: '🌌', category: 'galaxy' },
+                { emoji: '🏞️', category: 'park' },
+                { emoji: '🌊', category: 'ocean' },
+                { emoji: '🏜️', category: 'desert' },
+                { emoji: '🎪', category: 'circus' }
+            ],
+            actions: [
+                { emoji: '💥', category: 'explosion' },
+                { emoji: '💔', category: 'heartbreak' },
+                { emoji: '🎉', category: 'party' },
+                { emoji: '🔥', category: 'fire' },
+                { emoji: '⚡', category: 'lightning' },
+                { emoji: '🌟', category: 'star' },
+                { emoji: '🎯', category: 'target' },
+                { emoji: '🔮', category: 'magic' },
+                { emoji: '💫', category: 'sparkle' },
+                { emoji: '✨', category: 'shine' },
+                { emoji: '🌈', category: 'rainbow' },
+                { emoji: '🎭', category: 'theater' }
+            ],
+            emotions: [
+                { emoji: '😊', category: 'happy face' },
+                { emoji: '😢', category: 'sad face' },
+                { emoji: '😱', category: 'scared face' },
+                { emoji: '😡', category: 'angry face' },
+                { emoji: '😍', category: 'love face' },
+                { emoji: '🤔', category: 'thinking face' },
+                { emoji: '😎', category: 'cool face' },
+                { emoji: '🥺', category: 'pleading face' },
+                { emoji: '😈', category: 'devil face' },
+                { emoji: '🤗', category: 'hugging face' },
+                { emoji: '😤', category: 'frustrated face' },
+                { emoji: '🥳', category: 'party face' }
+            ],
+            nature: [
+                { emoji: '🌙', category: 'moon' },
+                { emoji: '☀️', category: 'sun' },
+                { emoji: '⭐', category: 'star' },
+                { emoji: '🌸', category: 'cherry blossom' },
+                { emoji: '🌺', category: 'flower' },
+                { emoji: '🍀', category: 'clover' },
+                { emoji: '🌹', category: 'rose' },
+                { emoji: '🌊', category: 'wave' },
+                { emoji: '🔥', category: 'fire' },
+                { emoji: '❄️', category: 'snow' },
+                { emoji: '🌪️', category: 'tornado' },
+                { emoji: '🌈', category: 'rainbow' }
+            ]
+        };
+
+        // Use Unsplash images
+        let useImages = true; // Can be toggled
+        let imageLoadErrors = 0;
+
+        // Get Unsplash image URL
+        function getUnsplashUrl(category) {
+            // Using Unsplash Source API (no auth needed)
+            return `https://source.unsplash.com/400x400/?${encodeURIComponent(category)}`;
+        }
+
+        let currentDice = [];
+        let stats = {
+            storiesWritten: 0,
+            totalWords: 0,
+            currentStreak: 0
+        };
+        let savedStories = [];
+
+        // Initialize
+        function init() {
+            loadStats();
+            loadSavedStories();
+            rollDice();
+            
+            // Word count listener
+            document.getElementById('storyText').addEventListener('input', updateWordCount);
+        }
+
+        function loadStats() {
+            const saved = localStorage.getItem('story-dice-stats');
+            if (saved) {
+                stats = JSON.parse(saved);
+                updateStatsDisplay();
+            }
+        }
+
+        function saveStats() {
+            localStorage.setItem('story-dice-stats', JSON.stringify(stats));
+            updateStatsDisplay();
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('storiesWritten').textContent = stats.storiesWritten;
+            document.getElementById('totalWords').textContent = stats.totalWords;
+            document.getElementById('currentStreak').textContent = stats.currentStreak;
+        }
+
+        function rollDice() {
+            currentDice = [];
+            const categories = Object.values(storyElements);
+            
+            // Roll 6 random elements from different categories
+            for (let i = 0; i < 6; i++) {
+                const category = categories[i % categories.length];
+                const randomElement = category[Math.floor(Math.random() * category.length)];
+                currentDice.push(randomElement);
+            }
+            
+            renderDice();
+        }
+
+        function renderDice() {
+            const grid = document.getElementById('diceGrid');
+            grid.innerHTML = '';
+            
+            currentDice.forEach((element, index) => {
+                const card = document.createElement('div');
+                card.className = 'dice-card rolling';
+                
+                // Try to use images, fallback to emoji
+                if (useImages && imageLoadErrors < 5) {
+                    const img = document.createElement('img');
+                    img.src = getUnsplashUrl(element.category);
+                    img.style.cssText = 'width: 100%; height: 180px; object-fit: cover; border-radius: 10px;';
+                    img.onerror = () => {
+                        imageLoadErrors++;
+                        img.replaceWith(createEmojiElement(element.emoji));
+                    };
+                    
+                    card.innerHTML = `
+                        <div style="padding: 10px;">
+                            <div style="margin-bottom: 8px;"></div>
+                            <div class="dice-label">Die ${index + 1}</div>
+                            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">${element.category}</div>
+                        </div>
+                    `;
+                    card.querySelector('div > div').appendChild(img);
+                } else {
+                    // Fallback to emoji
+                    card.innerHTML = `
+                        <div class="dice-emoji">${element.emoji}</div>
+                        <div class="dice-label">Die ${index + 1}</div>
+                        <div style="font-size: 0.85em; color: #666; margin-top: 5px;">${element.category}</div>
+                    `;
+                }
+                
+                // Remove rolling animation after it completes
+                setTimeout(() => card.classList.remove('rolling'), 500);
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function createEmojiElement(emoji) {
+            const div = document.createElement('div');
+            div.className = 'dice-emoji';
+            div.textContent = emoji;
+            return div;
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('storyText').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            
+            document.getElementById('wordCount').textContent = `${wordCount} / 500 words`;
+            
+            // Enable save button if story has content
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = wordCount < 10;
+        }
+
+        function clearStory() {
+            if (confirm('Clear your current story?')) {
+                document.getElementById('storyText').value = '';
+                updateWordCount();
+            }
+        }
+
+        function saveStory() {
+            const text = document.getElementById('storyText').value.trim();
+            if (text.length < 50) {
+                alert('Your story is too short! Write at least 50 characters.');
+                return;
+            }
+            
+            const words = text.split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            
+            const story = {
+                id: Date.now(),
+                text: text,
+                dice: [...currentDice],
+                date: new Date().toLocaleDateString(),
+                wordCount: wordCount
+            };
+            
+            savedStories.unshift(story);
+            
+            // Update stats
+            stats.storiesWritten++;
+            stats.totalWords += wordCount;
+            stats.currentStreak++;
+            
+            saveStats();
+            saveSavedStories();
+            renderSavedStories();
+            
+            // Clear and roll new
+            document.getElementById('storyText').value = '';
+            updateWordCount();
+            rollDice();
+            
+            alert('🎉 Story saved! Keep writing!');
+        }
+
+        function saveSavedStories() {
+            localStorage.setItem('story-dice-saved', JSON.stringify(savedStories));
+        }
+
+        function loadSavedStories() {
+            const saved = localStorage.getItem('story-dice-saved');
+            if (saved) {
+                savedStories = JSON.parse(saved);
+                renderSavedStories();
+            }
+        }
+
+        function renderSavedStories() {
+            const container = document.getElementById('savedStories');
+            
+            if (savedStories.length === 0) {
+                container.innerHTML = '<p style="color: #95a5a6; text-align: center; font-style: italic;">No stories saved yet. Start writing!</p>';
+                return;
+            }
+            
+            container.innerHTML = savedStories.slice(0, 10).map(story => `
+                <div class="story-card">
+                    <div class="story-card-header">
+                        <div class="story-card-author">Story #${savedStories.indexOf(story) + 1}</div>
+                        <div class="story-card-date">${story.date}</div>
+                    </div>
+                    <div class="story-card-icons">${story.dice.join(' ')}</div>
+                    <div class="story-card-text">${story.text}</div>
+                    <div class="story-card-date" style="margin-top: 10px;">${story.wordCount} words</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

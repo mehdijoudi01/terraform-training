@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Character Origin - Choice Chronicles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
+            min-height: 100vh;
+            padding: clamp(10px, 3vw, 20px);
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0e5f4d 0%, #0a4336 100%);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: clamp(8px, 2vw, 10px);
+        }
+
+        .back-btn, .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: clamp(40px, 8vw, 45px);
+            height: clamp(40px, 8vw, 45px);
+            cursor: pointer;
+            font-size: clamp(1em, 2.5vw, 1.2em);
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover, .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        body.dark-mode .container {
+            background: #0f2b23;
+        }
+
+        .game-content {
+            padding: clamp(20px, 4vw, 40px);
+            min-height: 600px;
+        }
+
+        .title {
+            color: #16a085;
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            margin-bottom: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .title {
+            color: #1abc9c;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: clamp(0.9em, 2vw, 1.1em);
+            margin-bottom: 30px;
+        }
+
+        .character-display {
+            background: linear-gradient(135deg, #e8f8f5 0%, #d5f4e6 100%);
+            padding: clamp(20px, 4vw, 30px);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 3px solid #16a085;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .character-display {
+            background: linear-gradient(135deg, #0f2b23 0%, #0a1c16 100%);
+            border-color: #1abc9c;
+        }
+
+        .character-portrait {
+            text-align: center;
+            font-size: clamp(4em, 10vw, 6em);
+            margin-bottom: 20px;
+        }
+
+        .character-name {
+            text-align: center;
+            font-size: clamp(1.5em, 3.5vw, 2em);
+            color: #16a085;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .character-name {
+            color: #1abc9c;
+        }
+
+        .character-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+            gap: clamp(10px, 2vw, 15px);
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: clamp(10px, 2vw, 12px);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        body.dark-mode .stat-item {
+            background: #0a1c16;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: clamp(0.8em, 1.8vw, 0.85em);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #16a085;
+            font-size: clamp(1.1em, 2.5vw, 1.3em);
+            font-weight: bold;
+        }
+
+        body.dark-mode .stat-value {
+            color: #1abc9c;
+        }
+
+        .backstory-section {
+            background: white;
+            padding: clamp(15px, 3vw, 20px);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .backstory-section {
+            background: #0a1c16;
+        }
+
+        .backstory-title {
+            color: #16a085;
+            font-size: clamp(1.1em, 2.5vw, 1.3em);
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        body.dark-mode .backstory-title {
+            color: #1abc9c;
+        }
+
+        .backstory-text {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.9em, 2vw, 1em);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .backstory-text {
+            color: #bdc3c7;
+        }
+
+        .choices-section {
+            margin-bottom: 30px;
+        }
+
+        .choice-title {
+            color: #16a085;
+            font-size: clamp(1.1em, 2.5vw, 1.3em);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        body.dark-mode .choice-title {
+            color: #1abc9c;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+            gap: clamp(12px, 2vw, 15px);
+            margin-bottom: 20px;
+        }
+
+        .choice-card {
+            background: white;
+            padding: clamp(15px, 3vw, 20px);
+            border-radius: 10px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        body.dark-mode .choice-card {
+            background: #0a1c16;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(22, 160, 133, 0.3);
+            border-color: #16a085;
+        }
+
+        .choice-card.selected {
+            border-color: #16a085;
+            background: #e8f8f5;
+        }
+
+        body.dark-mode .choice-card.selected {
+            background: #0f2b23;
+            border-color: #1abc9c;
+        }
+
+        .choice-icon {
+            font-size: clamp(2em, 5vw, 2.5em);
+            margin-bottom: 10px;
+        }
+
+        .choice-text {
+            color: #555;
+            font-size: clamp(0.85em, 1.8vw, 0.9em);
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .choice-text {
+            color: #95a5a6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: min(150px, 100%);
+            padding: clamp(12px, 2vw, 15px);
+            background: #16a085;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.9em, 2vw, 1em);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #138d75;
+            transform: translateY(-2px);
+        }
+
+        .btn.danger {
+            background: #e74c3c;
+        }
+
+        .btn.danger:hover {
+            background: #c0392b;
+        }
+
+        @media (max-width: 480px) {
+            .choices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .character-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="game-content">
+            <h1 class="title">👤 Character Origin</h1>
+            <p class="subtitle">Create unique character backstories</p>
+
+            <div class="character-display">
+                <div class="character-portrait" id="portrait">👤</div>
+                <div class="character-name" id="characterName">Your Character</div>
+                
+                <div class="character-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Race</div>
+                        <div class="stat-value" id="race">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Class</div>
+                        <div class="stat-value" id="class">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Age</div>
+                        <div class="stat-value" id="age">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Alignment</div>
+                        <div class="stat-value" id="alignment">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="choices-section" id="step1">
+                <div class="choice-title">1️⃣ Choose Your Race</div>
+                <div class="choices-grid" id="raceChoices"></div>
+            </div>
+
+            <div class="choices-section" id="step2" style="display: none;">
+                <div class="choice-title">2️⃣ Choose Your Class</div>
+                <div class="choices-grid" id="classChoices"></div>
+            </div>
+
+            <div class="choices-section" id="step3" style="display: none;">
+                <div class="choice-title">3️⃣ Choose Early Life Event</div>
+                <div class="choices-grid" id="eventChoices"></div>
+            </div>
+
+            <div class="backstory-section" id="backstory" style="display: none;">
+                <div class="backstory-title">📖 Your Character's Backstory</div>
+                <div class="backstory-text" id="backstoryText"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="randomCharacter()">🎲 Random Character</button>
+                <button class="btn" onclick="saveCharacter()" id="saveBtn" style="display: none;">💾 Save Character</button>
+                <button class="btn danger" onclick="resetCharacter()">🔄 Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('character-dark-mode', isDark);
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('character-dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Character data
+        // Character data - loaded from JSON
+        let races = [];
+        let classes = [];
+        let events = [];
+        let allCharacterData = null;
+        let preGeneratedCharacters = [];
+
+        // Load character data from JSON
+        async function loadCharacterData() {
+            try {
+                const response = await fetch('character-data.json');
+                allCharacterData = await response.json();
+                console.log(`Loaded ${allCharacterData.total_characters} characters from database`);
+                
+                // Extract unique races and classes
+                races = allCharacterData.races.map((race, index) => ({
+                    name: race.name,
+                    icon: ['👨', '🧝', '⛏️', '💪', '🐉', '😈', '🦄', '🧚', '🧝‍♀️', '💪'][index % 10],
+                    description: race.traits.join(', '),
+                    traits: race.traits.join(', ')
+                }));
+                
+                classes = allCharacterData.classes.map((cls, index) => ({
+                    name: cls.name,
+                    icon: ['⚔️', '🔮', '🗡️', '✨', '🎯', '🛡️', '🎵', '🌿', '🥊', '🔥'][index % 10],
+                    description: cls.skills.join(', '),
+                    abilities: cls.skills.join(', ')
+                }));
+                
+                // Store pre-generated characters
+                preGeneratedCharacters = allCharacterData.characters;
+                
+                return true;
+            } catch (error) {
+                console.error('Failed to load character data:', error);
+                // Fallback to legacy data
+                races = [
+                    { name: "Human", icon: "👨", description: "Versatile and ambitious", traits: "adaptable, determined" },
+                    { name: "Elf", icon: "🧝", description: "Graceful and wise", traits: "agile, perceptive" },
+                    { name: "Dwarf", icon: "⛏️", description: "Hardy and steadfast", traits: "resilient, craftsman" },
+                    { name: "Orc", icon: "💪", description: "Strong and fierce", traits: "powerful, warrior" }
+                ];
+                classes = [
+                    { name: "Warrior", icon: "⚔️", description: "Master of combat", abilities: "strength, defense" },
+                    { name: "Mage", icon: "🔮", description: "Wielder of arcane power", abilities: "magic, intelligence" },
+                    { name: "Rogue", icon: "🗡️", description: "Master of stealth", abilities: "agility, cunning" },
+                    { name: "Cleric", icon: "✨", description: "Divine healer", abilities: "healing, wisdom" }
+                ];
+                return false;
+            }
+        }
+
+        // Legacy arrays (removed, now loaded from JSON)
+        const legacyRaces = [
+            { name: "Human", icon: "👨", description: "Versatile and ambitious", traits: "adaptable, determined" },
+            { name: "Elf", icon: "🧝", description: "Graceful and wise", traits: "agile, perceptive" },
+            { name: "Dwarf", icon: "⛏️", description: "Hardy and steadfast", traits: "resilient, craftsman" },
+            { name: "Orc", icon: "💪", description: "Strong and fierce", traits: "powerful, warrior" }
+        ];
+
+        const classes = [
+            { name: "Warrior", icon: "⚔️", description: "Master of combat", abilities: "strength, defense" },
+            { name: "Mage", icon: "🔮", description: "Wielder of arcane power", abilities: "magic, intelligence" },
+            { name: "Rogue", icon: "🗡️", description: "Master of stealth", abilities: "agility, cunning" },
+            { name: "Cleric", icon: "✨", description: "Divine healer", abilities: "healing, wisdom" }
+        ];
+
+        const events = [
+            { name: "Orphaned", icon: "🏚️", description: "Lost parents early", impact: "independent, resourceful" },
+            { name: "Noble Birth", icon: "👑", description: "Born into nobility", impact: "educated, privileged" },
+            { name: "Apprenticeship", icon: "📚", description: "Trained by a master", impact: "skilled, disciplined" },
+            { name: "Tragedy", icon: "💔", description: "Survived a disaster", impact: "hardened, survivor" },
+            { name: "Adventure", icon: "🗺️", description: "Early travels", impact: "experienced, worldly" },
+            { name: "Prophecy", icon: "🌟", description: "Marked by destiny", impact: "chosen, burdened" }
+        ];
+
+        let character = {
+            race: null,
+            class: null,
+            event: null,
+            name: "",
+            age: 0,
+            alignment: ""
+        };
+
+        // Initialize
+        async function init() {
+            // Show loading
+            const step1 = document.getElementById('step1');
+            if (step1) {
+                step1.innerHTML = '<p style="text-align: center; padding: 20px;">Loading character data...</p>';
+            }
+            
+            // Load data
+            await loadCharacterData();
+            
+            renderRaces();
+        }
+
+        function renderRaces() {
+            const grid = document.getElementById('raceChoices');
+            grid.innerHTML = races.map(race => `
+                <div class="choice-card" onclick="selectRace('${race.name}')">
+                    <div class="choice-icon">${race.icon}</div>
+                    <div class="choice-text"><strong>${race.name}</strong><br>${race.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectRace(raceName) {
+            character.race = races.find(r => r.name === raceName);
+            document.getElementById('race').textContent = raceName;
+            document.getElementById('portrait').textContent = character.race.icon;
+            
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            renderClasses();
+        }
+
+        function renderClasses() {
+            const grid = document.getElementById('classChoices');
+            grid.innerHTML = classes.map(cls => `
+                <div class="choice-card" onclick="selectClass('${cls.name}')">
+                    <div class="choice-icon">${cls.icon}</div>
+                    <div class="choice-text"><strong>${cls.name}</strong><br>${cls.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectClass(className) {
+            character.class = classes.find(c => c.name === className);
+            document.getElementById('class').textContent = className;
+            
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const grid = document.getElementById('eventChoices');
+            grid.innerHTML = events.map(event => `
+                <div class="choice-card" onclick="selectEvent('${event.name}')">
+                    <div class="choice-icon">${event.icon}</div>
+                    <div class="choice-text"><strong>${event.name}</strong><br>${event.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectEvent(eventName) {
+            character.event = events.find(e => e.name === eventName);
+            generateCharacter();
+        }
+
+        function generateCharacter() {
+            // If we have pre-generated characters, use one
+            if (preGeneratedCharacters && preGeneratedCharacters.length > 0) {
+                const randomChar = preGeneratedCharacters[Math.floor(Math.random() * preGeneratedCharacters.length)];
+                
+                // Use pre-generated data
+                character.name = `${randomChar.race} ${randomChar.class}`;
+                character.age = Math.floor(Math.random() * 50) + 18;
+                character.alignment = randomChar.personality;
+                
+                // Display backstory
+                document.getElementById('characterName').textContent = character.name;
+                document.getElementById('age').textContent = character.age;
+                document.getElementById('alignment').textContent = character.alignment;
+                
+                document.getElementById('backstory').style.display = 'block';
+                document.getElementById('saveBtn').style.display = 'block';
+                document.getElementById('backstoryText').textContent = randomChar.backstory;
+                
+                return;
+            }
+            
+            // Fallback to legacy generation
+            // Generate name
+            const firstNames = ["Aria", "Brynn", "Cole", "Dana", "Erik", "Finn", "Gwen", "Hiro"];
+            const lastNames = ["Stormborn", "Ironforge", "Shadowblade", "Brightwood", "Darkmantle"];
+            character.name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+            
+            // Generate age
+            character.age = Math.floor(Math.random() * 30) + 20;
+            
+            // Generate alignment
+            const alignments = ["Lawful Good", "Neutral Good", "Chaotic Good", "Lawful Neutral", "True Neutral"];
+            character.alignment = alignments[Math.floor(Math.random() * alignments.length)];
+            
+            // Update display
+            document.getElementById('characterName').textContent = character.name;
+            document.getElementById('age').textContent = character.age;
+            document.getElementById('alignment').textContent = character.alignment;
+            
+            // Generate backstory
+            const backstory = `
+                ${character.name} is a ${character.age}-year-old ${character.race.name} ${character.class.name}. 
+                ${character.race.description} by nature and ${character.class.description.toLowerCase()}, 
+                ${character.name} has always been ${character.race.traits}.
+                
+                <br><br>
+                
+                In their youth, ${character.name} experienced ${character.event.description.toLowerCase()}. 
+                This defining moment made them ${character.event.impact}, shaping their path as a ${character.class.name}.
+                
+                <br><br>
+                
+                Now, as a ${character.alignment} individual, ${character.name} travels the land, 
+                using their ${character.class.abilities} to forge their own destiny.
+            `;
+            
+            document.getElementById('backstoryText').innerHTML = backstory;
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('backstory').style.display = 'block';
+            document.getElementById('saveBtn').style.display = 'block';
+        }
+
+        function randomCharacter() {
+            const randomRace = races[Math.floor(Math.random() * races.length)];
+            const randomClass = classes[Math.floor(Math.random() * classes.length)];
+            const randomEvent = events[Math.floor(Math.random() * events.length)];
+            
+            character.race = randomRace;
+            character.class = randomClass;
+            character.event = randomEvent;
+            
+            document.getElementById('race').textContent = randomRace.name;
+            document.getElementById('class').textContent = randomClass.name;
+            document.getElementById('portrait').textContent = randomRace.icon;
+            
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            
+            generateCharacter();
+        }
+
+        function saveCharacter() {
+            const saved = localStorage.getItem('character-origin-saved');
+            let characters = saved ? JSON.parse(saved) : [];
+            
+            characters.unshift({
+                ...character,
+                date: new Date().toLocaleDateString()
+            });
+            
+            // Keep only last 10
+            characters = characters.slice(0, 10);
+            
+            localStorage.setItem('character-origin-saved', JSON.stringify(characters));
+            alert('✨ Character saved successfully!');
+        }
+
+        function resetCharacter() {
+            character = {
+                race: null,
+                class: null,
+                event: null,
+                name: "",
+                age: 0,
+                alignment: ""
+            };
+            
+            document.getElementById('race').textContent = '-';
+            document.getElementById('class').textContent = '-';
+            document.getElementById('age').textContent = '-';
+            document.getElementById('alignment').textContent = '-';
+            document.getElementById('portrait').textContent = '👤';
+            document.getElementById('characterName').textContent = 'Your Character';
+            
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('backstory').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'none';
+            
+            renderRaces();
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

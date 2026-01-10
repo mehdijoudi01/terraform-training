@@ -756,7 +756,19 @@
 
     <div class="container">
         <div class="game-content">
-            <div class="api-status" id="apiStatus">🔄 Loading historical data...</div>
+            <div class="api-status" id="apiStatus">🔄 Loading historical database...</div>
+
+            <script>
+                // Load chronicle data on page load
+                window.addEventListener('DOMContentLoaded', async () => {
+                    const loaded = await loadEventsData();
+                    if (loaded) {
+                        document.getElementById('apiStatus').textContent = `✅ Loaded ${allEventsData.total_events} historical events from database`;
+                    } else {
+                        document.getElementById('apiStatus').textContent = '⚠️ Using offline historical data';
+                    }
+                });
+            </script>
 
             <div id="leaderDisplay" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px; border-radius: 10px; margin-bottom: 20px; color: white; display: none;">
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -1471,7 +1483,7 @@
             }, 3000);
         }
 
-        function startGame(difficulty = 'normal') {
+        // Chronicle data - loaded from JSON\n        let allEventsData = null;\n\n        // Load events from JSON\n        async function loadEventsData() {\n            try {\n                const response = await fetch('chronicle-data.json');\n                allEventsData = await response.json();\n                console.log(`Loaded ${allEventsData.total_events} events from database`);\n                return true;\n            } catch (error) {\n                console.error('Failed to load chronicle data:', error);\n                return false;\n            }\n        }\n\n        function startGame(difficulty = 'normal') {
             if (!selectedLeader) {
                 alert('⚠️ Please select a leader first!');
                 document.getElementById('difficultySelection').style.display = 'none';
@@ -1604,6 +1616,38 @@
             const { stability, innovation, culture, economy } = gameState;
             const templates = [];
 
+            // Load from JSON if available
+            if (allEventsData && allEventsData.events) {
+                const categoryEvents = allEventsData.events.filter(event => {
+                    // Filter by category if specified
+                    return true; // Use all events
+                });
+                
+                // Get random events from JSON
+                const numEvents = Math.min(5, categoryEvents.length);
+                for (let i = 0; i < numEvents; i++) {
+                    const randomEvent = categoryEvents[Math.floor(Math.random() * categoryEvents.length)];
+                    templates.push({
+                        title: `${era.name}: ${randomEvent.title}`,
+                        situation: randomEvent.description,
+                        choices: randomEvent.choices.map(choice => ({
+                            text: choice.text,
+                            effects: {
+                                stability: Math.round((choice.stability || 0) / 5),
+                                innovation: Math.round((choice.popularity || 0) / 5),
+                                culture: Math.round((choice.stability || 0) / 5),
+                                economy: Math.round((choice.resources || 0) / 2)
+                            }
+                        }))
+                    });
+                }
+                
+                if (templates.length > 0) {
+                    return templates; // Return JSON events if loaded
+                }
+            }
+
+            // Fallback to legacy templates
             // Crisis events if any stat is low
             if (stability < 30) {
                 templates.push({
